@@ -1,0 +1,36 @@
+plugins { id 'com.android.application' }
+
+def runNr = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as Integer
+def ksFile = System.getenv('KEYSTORE_FILE')
+
+android {
+    namespace 'de.orbitsprung.app'
+    compileSdk 34
+    defaultConfig {
+        applicationId 'de.orbitsprung.app'
+        minSdk 26
+        targetSdk 34
+        versionCode runNr
+        versionName "1.${runNr}"
+    }
+    signingConfigs {
+        release {
+            if (ksFile) {
+                storeFile file(ksFile)
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig ksFile ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}

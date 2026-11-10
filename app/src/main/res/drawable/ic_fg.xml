@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Planet mit Umlaufbahn und Komet; der sichtbare Bereich eines adaptiven Icons ist die mittlere Fläche -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <!-- Umlaufbahn -->
+    <path android:pathData="M54,30 a24,24 0 1,1 -0.01,0"
+        android:strokeColor="#5586e3c8" android:strokeWidth="1.6" android:fillColor="#00000000" />
+    <!-- Planet -->
+    <path android:pathData="M54,44 a10,10 0 1,1 -0.01,0" android:fillColor="#86e3c8" />
+    <path android:pathData="M50,47 a4,4 0 1,1 -0.01,0" android:fillColor="#40ffffff" />
+    <!-- Kometenschweif -->
+    <path android:pathData="M76,40 C70,33 63,30 56,30 C63,32 68,36 73,43 Z" android:fillColor="#ff6f59" />
+    <path android:pathData="M76,40 C72,35 67,32 62,31 C67,34 70,37 74,42 Z" android:fillColor="#ffb454" />
+    <!-- Kometenkopf -->
+    <path android:pathData="M76,36.5 a3.5,3.5 0 1,1 -0.01,0" android:fillColor="#fff6e6" />
+</vector>
