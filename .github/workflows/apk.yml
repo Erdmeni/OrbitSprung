@@ -9,7 +9,30 @@ permissions:
   contents: write
 
 jobs:
+  pruefen:
+    name: Prüfen und testen
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - name: Release-Prüfung (keine Testversion in der App)
+        run: node tests/release-check.mjs
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Playwright installieren
+        run: |
+          npm install --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Module zerlegen und zusammensetzen
+        run: node tests/module.mjs
+      - name: Smoke-Test (alle Modi, Shop, Einstellungen)
+        run: node tests/smoke.mjs
+      - name: Sync-Test (zwei Geräte, Staub-Buchführung)
+        run: node tests/sync.mjs
+
   build:
+    needs: pruefen
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
