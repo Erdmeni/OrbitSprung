@@ -20,7 +20,16 @@ jobs:
       - name: Schlüssel bereitstellen
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-        run: echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          for n in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEY_ALIAS KEY_PASSWORD; do
+            if [ -z "${!n}" ]; then echo "::error::Secret $n fehlt oder ist leer"; FEHLT=1; else echo "$n gesetzt"; fi
+          done
+          [ -z "$FEHLT" ] || exit 1
+          printf '%s' "$KEYSTORE_BASE64" | tr -d ' \r\n\t' | base64 -d > "$RUNNER_TEMP/release.jks"
+          echo "Keystore: $(wc -c < "$RUNNER_TEMP/release.jks") Bytes (erwartet 4306)"
       - name: APK bauen
         env:
           KEYSTORE_FILE: ${{ runner.temp }}/release.jks
