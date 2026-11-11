@@ -12,7 +12,7 @@ jobs:
   pruefen:
     name: Prüfen und testen
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
       - name: Release-Prüfung (keine Testversion in der App)
@@ -21,9 +21,20 @@ jobs:
         with:
           node-version: '22'
       - name: Playwright installieren
+        # Robust gegen ausgefallene Ubuntu-Paketserver: apt wiederholt Downloads, jeder Versuch hat
+        # höchstens 6 Minuten, es gibt zwei Versuche. Klappt es mit den Systempaketen nicht, wird nur der
+        # Browser installiert (die fehlenden Pakete sind meist Schriften); die Tests danach zeigen, ob er läuft.
         run: |
+          echo 'Acquire::Retries "3";' | sudo tee /etc/apt/apt.conf.d/80-retries >/dev/null
           npm install --no-audit --no-fund
-          npx playwright install --with-deps chromium
+          for i in 1 2; do
+            if timeout 360 npx playwright install --with-deps chromium; then exit 0; fi
+            echo "::warning::Playwright mit Systempaketen fehlgeschlagen (Versuch $i), neuer Versuch in 20 s"
+            sleep 20
+            sudo apt-get update || true
+          done
+          echo "::warning::Systempakete nicht vollständig installierbar, installiere nur den Browser"
+          npx playwright install chromium
       - name: Module zerlegen und zusammensetzen
         run: node tests/module.mjs
       - name: Smoke-Test (alle Modi, Shop, Einstellungen)
