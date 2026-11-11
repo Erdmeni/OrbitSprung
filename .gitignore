@@ -9,4 +9,4 @@ GitHub-Secrets.txt
 node_modules/
 package-lock.json
 # Module zum Bearbeiten, erzeugt mit node tools/split.mjs (Quelle bleibt index.html)
-src/
+/src/
