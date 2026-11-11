@@ -363,7 +363,7 @@ body.shopping .mid{padding-block:0}
       <div class="rules">
         <b>Tippen</b><span>Dein Komet löst sich tangential.</span>
         <b>Anziehung</b><span>Reicht die Anziehung eines Körpers für dein Tempo, kreist du um ihn. Bist du zu schnell, streifst du ihn nur und wirst abgelenkt.</span>
-        <b>Tempo</b><span>Jeder neue Planet erhöht dein Tempo um ×0,1, Sonnen um ×0,2, Neutronensterne um ×0,3. Im Flug bleibt es gleich, die Schwerkraft lenkt dich nur.</span>
+        <b>Tempo</b><span>Jeder neue Planet erhöht dein Tempo um ×0,1, Sonnen um ×0,2, Neutronensterne um ×0,3 (im Chaos ein Drittel mehr, im Sprint etwas mehr). Im Flug bleibt es gleich, die Schwerkraft lenkt dich nur.</span>
         <b>Aufprall</b><span>Du prallst physikalisch von Oberflächen ab: Frontal kostet viel Tempo, streifend kaum. Gasriesen bremsen dich wie eine Atmosphäre.</span>
         <b>Schwerkraft</b><span>Jeder Himmelskörper hat eine Masse. Schwere Körper ziehen dich und alle Brocken stärker und weiter an und haben größere Bahnen.</span>
         <b>Sonne</b><span>Zieht enorm an, gibt +0,2 Tempo und doppelten Staub. Ein Aufprall verbrennt 60 % deines Tempos.</span>
@@ -393,7 +393,7 @@ body.shopping .mid{padding-block:0}
       </div>
       </details>
       <div class="keys">Leertaste, Pfeil hoch oder Tippen</div>
-      <div class="ver" id="ver">Orbitsprung 1.5.1</div>
+      <div class="ver" id="ver">Orbitsprung 1.5.2</div>
       <div class="btns">
         <button class="go" id="start" type="button">Starten</button>
         <button class="go alt" id="shopFromMenu" type="button">Shop</button>
@@ -541,10 +541,13 @@ if(GFX_FIX==='mid') gfx=1; else if(GFX_FIX==='low') gfx=0;
 // Auf schmalen Bildschirmen wird die Spielwelt herausgezoomt: Sie ist immer mindestens 680 Einheiten breit,
 // damit Abstände und Größen am Handy so wirken wie am PC.
 let ZOOM=1;
+// Kamera: dein Planet steht bei CAM_Y der Bildhöhe, darüber ist Platz für die nächsten zwei Planeten
+const VIEW_K=.9, CAM_Y=.7;
 function resize(){
   DPR=gfx>0?Math.min(2,window.devicePixelRatio||1):1;
   const cw=cv.clientWidth, ch=cv.clientHeight;
-  ZOOM=Math.min(1,cw/680);
+  // Etwas herausgezoomt (VIEW_K), damit du beim Kreisen zwei Planeten vorausschaust. Auf flachen Bildschirmen zusätzlich nach der Höhe.
+  ZOOM=Math.min(1,cw/680,ch/1050)*VIEW_K;
   W=cw/ZOOM; H=ch/ZOOM;
   cv.width=Math.round(cw*DPR); cv.height=Math.round(ch*DPR);
   cx.setTransform(DPR*ZOOM,0,0,DPR*ZOOM,0,0);
@@ -895,7 +898,7 @@ const MODES={
   klassik:{name:'Klassisch',desc:'Ein Leben, endlos nach oben. Der Klassiker.'},
   sprint:{name:'Sprint',desc:'60 Sekunden für möglichst viele Punkte. Verglühen kostet 5 Sekunden, dann geht es am letzten Planeten weiter.'},
   zen:{name:'Zen',desc:'Kein Verglühen und kein Zeitdruck, du startest einfach am letzten Planeten neu. Staub gibt es nur aus Funkeln.'},
-  chaos:{name:'Chaos',desc:'Alle Planeten wandern, die Bahnen sind kleiner und schneller. Dafür gibt es doppelten Staub.'},
+  chaos:{name:'Chaos',desc:'Alle Planeten wandern, liegen enger beisammen und alles ist schneller. Dafür gibt es doppelten Staub.'},
   feld:{name:'Asteroidenfeld',price:1000,desc:'Dichte Trümmerfelder ab dem ersten Sprung. Zerschmettern gibt doppelte Punkte.'},
   hyper:{name:'Hyper',price:1500,desc:'Du startest mit Tempo ×2 und wirst nie langsamer. Alles geht schneller, auch die Punkte.'},
   daily:{name:'Tagesflug',desc:'Jeden Tag eine neue, feste Welt: Bei jedem Versuch kommen dieselben Planeten. Ein Leben, eigener Tagesrekord.'}
@@ -998,7 +1001,7 @@ function goalsReset(){
   runSec=1; secCarry=0; spawnN=0; curRule={}; zinsBase=0; runTop=0; hiAnn=false; runRevived=false;
   passedN=0; ghosts=[]; recPY=null; hiPAnn=false; hiPrevP=hiPOf(mode); updPlc();
   sky={from:SECTORS[0].sky,to:SECTORS[0].sky,t:1};
-  runY0=H*.64; hiPrev=hiOf(mode);
+  runY0=H*CAM_Y; hiPrev=hiOf(mode);
   dRng=mode==='daily'?mulberry(seedOf('orbitsprung-'+today())):null;
   const rb=$('reviveBox'); if(rb) rb.hidden=true;
 }
@@ -1113,7 +1116,7 @@ if(!save.sk) save.sk={}; if(!save.own) save.own={};
 for(const k in SKINSETS){ if(!save.sk[k]) save.sk[k]=SKINSETS[k].items[0].id; if(!save.own[k]) save.own[k]=[SKINSETS[k].items[0].id]; }
 const skinOf=k=>SKINSETS[k].items.find(i=>i.id===save.sk[k])||SKINSETS[k].items[0];
 // Spielversion: muss zum Menütext #ver passen. Die GitHub Action nimmt sie als Release-Tag v<APP_VERSION>
-const APP_VERSION='1.5.1';
+const APP_VERSION='1.5.2';
 // Nur in der Test-Artefakt-Version true: alle Skins, Spielmodi und Entdeckungen gehören dir, dazu viel Staub für Upgrades
 const TEST_BUILD=false;
 function testUnlock(){
@@ -1516,13 +1519,20 @@ let state='menu', prevState='menu', planets=[], P, camY=0, camT=0, score=0, comb
 // Physik: Geschwindigkeit bleibt erhalten (kein Luftwiderstand im All), Planeten ziehen mit 1/r² an
 const BASE=280, GK=.7;
 // Tempo steigt in festen Schritten: jeder neue Planet +0,1, Sonnen (auch Eruptionssonne und Doppelstern) +0,2,
-// Neutronensterne +0,3 (Start ×1, Chaos ×1,1, Hyper ×2). tInc sammelt die Schritte der Runde.
+// Neutronensterne +0,3 (Start und Schrittfaktor je Modus in FEEL). tInc sammelt die Schritte der Runde.
 // Beim Einfangen wird die Bahn genau auf dieses Tempo gesetzt; im Flug bleibt das Tempo konstant, die Schwerkraft lenkt nur.
 const TEMPO_STEP=.1, TEMPO_SUN=.2, TEMPO_NEUTRON=.3;
 let tInc=0;
-const tStep=p=>p.type==='neutron'?TEMPO_NEUTRON:sunny(p)?TEMPO_SUN:TEMPO_STEP;
-function tempoTarget(add){return BASE*((mode==='chaos'?1.1:1)*(mode==='hyper'?2:1)+tInc+(add||0));}
-function floorSpd(){return BASE*lerp(1,1.25,diff())*(mode==='chaos'?1.1:1)*(mode==='hyper'?2:1);}
+// Spielgefühl je Modus: Planetenabstand (Anteil der Bildhöhe, g0 bis g1), Starttempo t0 und Faktor tk für die Tempo-Schritte.
+// Chaos: eng und schnell. Sprint: etwas enger und flotter, damit in 60 s mehr passiert. Hyper: Tempo wie bisher, etwas enger.
+// Zen bleibt beim alten Tempo. Klassisch, Tagesflug und Asteroidenfeld: etwas enger und einen Tick schneller als früher.
+const FEEL={klassik:{g0:.24,g1:.30,t0:1.1,tk:1}, daily:{g0:.24,g1:.30,t0:1.1,tk:1}, feld:{g0:.24,g1:.30,t0:1.1,tk:1},
+  zen:{g0:.25,g1:.31,t0:1,tk:1}, sprint:{g0:.22,g1:.28,t0:1.2,tk:1.15}, hyper:{g0:.23,g1:.29,t0:2,tk:1}, chaos:{g0:.165,g1:.205,t0:1.25,tk:1.3,gm:85}};
+const feel=()=>FEEL[mode]||FEEL.klassik;
+const gapMin=()=>feel().gm||GAP_MIN, modeT0=()=>feel().t0, modeTK=()=>feel().tk;
+const tStep=p=>(p.type==='neutron'?TEMPO_NEUTRON:sunny(p)?TEMPO_SUN:TEMPO_STEP)*modeTK();
+function tempoTarget(add){return BASE*(modeT0()+tInc+(add||0));}
+function floorSpd(){return BASE*lerp(1,1.25,diff())*modeT0();}
 function grav(p,d){
   // Masse und Reichweite hängen von der Planetengröße ab
   const reach=p.reach; if(d>reach||d<1) return 0;
@@ -1609,10 +1619,11 @@ function spawn(){
   for(let i=n0;i<planets.length;i++) planets[i].ord=spawnN;
   return r;
 }
-// Planetenabstände: senkrecht zufällig zwischen GAP_V0 und GAP_V1 der Bildhöhe. Die Kamera hält deinen Planeten bei 64 % der Höhe,
-// so siehst du beim Kreisen genau den nächsten Planeten, der übernächste liegt noch über dem Bildrand.
-// Zwischen den Bahnen bleiben immer mindestens GAP_MIN frei (wichtig bei flachen Bildschirmen).
-const GAP_V0=.37, GAP_V1=.52, GAP_MIN=120;
+// Planetenabstände: senkrecht zufällig als Anteil der Bildhöhe. Die Kamera hält deinen Planeten bei CAM_Y (70 %) der Höhe,
+// so siehst du beim Kreisen zwei Planeten voraus, im Chaos drei.
+// Die Werte je Modus stehen in FEEL (g0 bis g1), im Chaos und Sprint liegen die Körper enger und kommen häufiger.
+// Zwischen den Bahnen bleiben immer mindestens GAP_MIN frei (im Chaos FEEL.gm), wichtig bei flachen Bildschirmen.
+const GAP_MIN=105;
 function spawnRaw(){
   const prev=planets[planets.length-1], d=Math.min(1,planets.length/45);
   const dm=typeDims(secType(pickType(d,prev),prev),d); dm.R=massR(dm.type,dm.r);
@@ -1620,17 +1631,17 @@ function spawnRaw(){
   const ext=dm.type==='binar'?dm.R+7:0, R=dm.R+ext;
   const pb=prev.bin, px=pb?pb.cx:prev.x, py=pb?pb.cy:prev.y, pR=prev.R+(pb?pb.D/2:0);
   const near=planets.slice(-5);
-  let x=px, y=py-(pR+R+GAP_MIN), best=-1;
+  let x=px, y=py-(pR+R+gapMin()), best=-1;
   for(let i=0;i<24;i++){
     // Senkrechter Abstand nach Bildhöhe, aber nie so knapp, dass sich die Bahnen näher als GAP_MIN kommen
-    const dy=Math.max(H*rnd(GAP_V0,GAP_V1+.03*d), pR+R+GAP_MIN);
+    const dy=Math.max(H*rnd(feel().g0,feel().g1+.02*d), pR+R+gapMin());
     // Seitlich höchstens etwa 35°, damit der Sprung trotz der Weite fair bleibt
     const tx=rnd(R+22,Math.max(R+23,W-R-22));
     if(Math.abs(tx-px)>dy*.7) continue;
     const ty=py-dy;
     let room=Infinity;
     for(const q of near){ if(q===prev||q===prev.twin) continue; const qb=q.bin; room=Math.min(room,Math.hypot(tx-(qb?qb.cx:q.x),ty-(qb?qb.cy:q.y))-q.R-(qb?qb.D/2:0)-R); }
-    if(room>=GAP_MIN){ x=tx; y=ty; best=1; break; }
+    if(room>=gapMin()){ x=tx; y=ty; best=1; break; }
     if(room>best){ best=room; x=tx; y=ty; }
   }
   const gap=py-y;
@@ -1653,7 +1664,7 @@ function spawnRaw(){
 function reset(){
   goalsReset();
   fields=[]; planets=[]; rocks=[]; swarms={}; cine=null; motes=[]; trail=[]; parts=[]; floats=[]; rings=[]; coins=[]; banners=[]; shake=0; slow=0; score=0; tInc=0; combo=0; visited=0; runStaub=0; camY=0; camT=0; timeLeft=60;
-  const p0=mkPlanet(W/2,H*.64,0,true); p0.ord=0; planets.push(p0);
+  const p0=mkPlanet(W/2,H*CAM_Y,0,true); p0.ord=0; planets.push(p0);
   while(planets[planets.length-1].y>camY-H) spawn();
   P={mode:'orbit',pl:p0,a:-Math.PI/2,dir:1,t:0,rad:p0.R,rv:0,x:p0.x,y:p0.y-p0.R,vx:0,vy:0,spd:floorSpd(),noHit:0,shield:lvl('schild'),burns:lvl('zuend'),from:null,quick:false,alive:true};
   setOrbit(p0,0,-p0.R,0,P.spd,1);
@@ -2453,7 +2464,7 @@ function update(dt){
       const pl=P.pl, r=P.rad;
       // Funkeln folgen deiner Bahnhöhe, damit du sie auch auf einer Ellipse einsammeln kannst
 
-      camT=pl.y-H*.64;
+      camT=pl.y-H*CAM_Y;
       if(state==='play' && visited===0) hintT+=dt;
     }else if(P.alive){
       // Punkte für Flugdauer: 5 pro Sekunde, schneller fliegen zählt mehr
@@ -4224,4 +4235,5 @@ reset();
 requestAnimationFrame(frame);
 })();
 </script>
+
 </body></html>
