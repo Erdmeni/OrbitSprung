@@ -37,7 +37,7 @@ body.dim #sky{filter:brightness(.55) saturate(.8)}
 .dock .tbox{margin-inline:auto;align-items:center}
 .dock .tbox .lbl{text-align:center}
 .dock .spacer{margin-left:auto}
-.dock .tbox+.spacer{margin-left:0}
+.dock .tbox:not([hidden])+.spacer{margin-left:0}
 .dock .wallet{padding:0;font-size:16px}
 .dock .wallet i{font-size:13px}
 /* Kette, Tempo und Schild schweben direkt über der Leiste, ohne dass sich etwas verschiebt */
@@ -240,6 +240,13 @@ body.shopping .mid{padding-block:0}
 .cbtns{display:flex;gap:8px}
 .cbtns .go{min-height:48px}
 .cbtns .go:disabled{background:var(--tile);color:var(--muted);cursor:default;transform:none;filter:none}
+/* Update-Hinweis beim Start: eigene Ebene über allem, Hintergrund abgedunkelt */
+.updlay{position:fixed;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top,0px)) 16px max(16px,env(safe-area-inset-bottom,0px));background:rgba(3,9,13,.66);animation:cfade .18s}
+.updlay .card{max-width:360px;max-height:100%;border-color:rgba(255,180,84,.45);box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.updlay h1{font-size:22px}
+.updnotes{margin:0;padding:8px 10px;max-height:28vh;overflow:auto;background:var(--tile);border:1px solid var(--line);border-radius:10px;font-size:12.5px;line-height:1.45;color:#c9dedc;white-space:pre-line}
+.updlay .btns{display:flex;gap:8px}
+.updlay a.go{display:flex;align-items:center;justify-content:center;text-decoration:none}
 @keyframes cfade{from{opacity:0}}
 @keyframes csheet{from{transform:translateY(40px);opacity:.3}}
 @media (prefers-reduced-motion:reduce){.conf,.cbox{animation:none}}
@@ -323,6 +330,19 @@ body.shopping .mid{padding-block:0}
 
 <canvas id="sky" aria-label="Spielfeld"></canvas>
 <div class="toast" id="toast" hidden aria-live="polite"><div class="badge" id="toastIc">★</div><div><small>Erfolg freigeschaltet</small><b id="toastName"></b><span id="toastRw"></span></div></div>
+<div class="updlay" id="upd" role="dialog" aria-modal="true" aria-labelledby="updTitle" hidden>
+  <div class="card">
+    <span class="lbl">Update verfügbar</span>
+    <h1 id="updTitle">Orbit<span>sprung</span> <span id="updVer"></span></h1>
+    <p id="updTxt"></p>
+    <p class="updnotes" id="updNotes" hidden></p>
+    <button class="opt" id="updSkip" type="button" role="switch" aria-checked="false"><span><b>Diese Nachricht nicht mehr anzeigen</b><small>Gilt nur für diese Version. Bei der nächsten neuen Version kommt der Hinweis wieder.</small></span><i aria-hidden="true"></i></button>
+    <div class="btns">
+      <button class="go alt" id="updNo" type="button">Ignorieren</button>
+      <a class="go" id="updGo" href="https://github.com/Erdmeni/OrbitSprung/releases/latest" target="_blank" rel="noopener">Zum Download</a>
+    </div>
+  </div>
+</div>
 <div class="ui">
   <div class="mid">
     <div class="card" id="menu">
@@ -373,7 +393,7 @@ body.shopping .mid{padding-block:0}
       </div>
       </details>
       <div class="keys">Leertaste, Pfeil hoch oder Tippen</div>
-      <div class="ver" id="ver">Orbitsprung 1.5</div>
+      <div class="ver" id="ver">Orbitsprung 1.5.1</div>
       <div class="btns">
         <button class="go" id="start" type="button">Starten</button>
         <button class="go alt" id="shopFromMenu" type="button">Shop</button>
@@ -1092,6 +1112,8 @@ const skinT=()=>THEMES.find(t=>t.id===save.theme)||THEMES[0];
 if(!save.sk) save.sk={}; if(!save.own) save.own={};
 for(const k in SKINSETS){ if(!save.sk[k]) save.sk[k]=SKINSETS[k].items[0].id; if(!save.own[k]) save.own[k]=[SKINSETS[k].items[0].id]; }
 const skinOf=k=>SKINSETS[k].items.find(i=>i.id===save.sk[k])||SKINSETS[k].items[0];
+// Spielversion: muss zum Menütext #ver passen. Die GitHub Action nimmt sie als Release-Tag v<APP_VERSION>
+const APP_VERSION='1.5.1';
 // Nur in der Test-Artefakt-Version true: alle Skins, Spielmodi und Entdeckungen gehören dir, dazu viel Staub für Upgrades
 const TEST_BUILD=false;
 function testUnlock(){
@@ -3724,13 +3746,14 @@ function act(){
 }
 window.addEventListener('pointerdown',e=>{
   if(!MUS.timer) musicSync();
-  if(e.target.closest('button')||e.target.closest('.card')) return;
+  if(e.target.closest('button')||e.target.closest('.card')||!$('upd').hidden) return;
   if(state!=='play'&&state!=='menu') return;
   act();
 });
 window.addEventListener('contextmenu',e=>e.preventDefault());
 window.addEventListener('keydown',e=>{
   if(!MUS.timer) musicSync();
+  if(!$('upd').hidden){ if(e.code==='Escape'){ e.preventDefault(); updClose(); } return; }
   if(state==='shop'){ if(e.code==='Escape'){ if(conf){ closeConf(); SFX.ui(); } else closeShop(); } return; }
   if(state==='settings'){ if(e.code==='Escape') closeSettings(); return; }
   if(state==='prog'){ if(e.code==='Escape') closeProg(); return; }
@@ -4155,6 +4178,46 @@ function drawAim(){
   cx.restore();
   return hit;
 }
+// Update-Prüfung: einmal beim Start nach dem neuesten GitHub-Release fragen. Ohne Netz passiert nichts.
+// „Nicht mehr anzeigen“ merkt sich genau diesen Release-Tag, bei einem neueren Tag erscheint der Hinweis wieder.
+const UPD_API='https://api.github.com/repos/Erdmeni/OrbitSprung/releases/latest', UPD_KEY='orbitsprung.updSkip';
+const verNum=t=>{ const m=String(t||'').match(/(\d+(?:\.\d+)*)/); return m?m[1].split('.').map(Number):null; };
+function verNewer(a,b){ for(let i=0;i<Math.max(a.length,b.length);i++){ const d=(a[i]||0)-(b[i]||0); if(d) return d>0; } return false; }
+let updRel=null;
+function updShow(){
+  if(!updRel||!$('upd').hidden) return;
+  if(state!=='menu'&&state!=='over'){ setTimeout(updShow,1000); return; }
+  const r=updRel, v=verNum(r.tag).join('.');
+  $('updVer').textContent=v;
+  $('updTxt').textContent=`Du spielst Version ${APP_VERSION}. Version ${v} ist auf GitHub erschienen. Du kannst sie in Obtainium aktualisieren oder hier herunterladen. Mit „Ignorieren“ spielst du einfach weiter.`;
+  const notes=String(r.body||'').replace(/\r/g,'').replace(/^#+\s*/gm,'').replace(/\*\*/g,'').replace(/^\s*[-*]\s+/gm,'• ').trim().slice(0,900);
+  $('updNotes').textContent=notes; $('updNotes').hidden=!notes;
+  if(r.url) $('updGo').href=r.url;
+  $('updSkip').setAttribute('aria-checked','false');
+  $('upd').hidden=false;
+}
+function updClose(){
+  if($('updSkip').getAttribute('aria-checked')==='true'&&updRel){ try{ localStorage.setItem(UPD_KEY,updRel.tag); }catch(e){} }
+  $('upd').hidden=true; updRel=null;
+}
+async function updCheck(){
+  if(typeof fetch!=='function'||!/^\d+(\.\d+)*$/.test(APP_VERSION)) return;
+  try{
+    const ac=typeof AbortController==='function'?new AbortController():null; if(ac) setTimeout(()=>ac.abort(),8000);
+    const res=await fetch(UPD_API,{cache:'no-store',headers:{Accept:'application/vnd.github+json'},signal:ac?ac.signal:undefined});
+    if(!res.ok) return;
+    const j=await res.json(), tag=j&&j.tag_name, n=verNum(tag);
+    if(!tag||!n||j.draft||j.prerelease||!verNewer(n,verNum(APP_VERSION))) return;
+    let skip=''; try{ skip=localStorage.getItem(UPD_KEY)||''; }catch(e){}
+    if(skip===tag) return;
+    updRel={tag,url:/^https:\/\/github\.com\//.test(j.html_url||'')?j.html_url:'',body:j.body||''}; updShow();
+  }catch(e){}
+}
+$('updSkip').addEventListener('click',e=>{ const b=e.currentTarget; b.setAttribute('aria-checked',String(b.getAttribute('aria-checked')!=='true')); SFX.ui(); });
+$('updNo').addEventListener('click',()=>{ updClose(); SFX.ui(); });
+$('updGo').addEventListener('click',()=>{ setTimeout(updClose,0); });
+setTimeout(updCheck,600);
+
 checkAch(true); updAchDot();
 
 reset();

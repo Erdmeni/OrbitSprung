@@ -2,6 +2,8 @@ package de.orbitsprung.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebViewClient;
 
 /** Zeigt das Spiel bildschirmfüllend in einer WebView an. */
@@ -41,7 +44,19 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(true);
         s.setTextZoom(100);                    // Systemschriftgröße soll das Layout nicht verschieben
 
-        web.setWebViewClient(new WebViewClient());
+        web.setWebViewClient(new WebViewClient() {
+            // Links ins Netz (z. B. „Zum Download“ im Update-Hinweis) im Browser öffnen, nicht im Spiel
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
+                Uri u = req.getUrl();
+                String sc = u.getScheme();
+                if ("http".equals(sc) || "https".equals(sc)) {
+                    try { startActivity(new Intent(Intent.ACTION_VIEW, u)); } catch (Exception e) { /* kein Browser */ }
+                    return true;
+                }
+                return false;
+            }
+        });
         setContentView(web);
         hideSystemBars();
 

@@ -19,7 +19,9 @@
 
 ## Updates
 
-Jeder Push auf `main` baut automatisch eine neue Version (Versionsnummer steigt von selbst).
+Jeder Push auf `main` baut automatisch die APK. Die Versionsnummer steht im Spiel (`const APP_VERSION='1.5.1';` und Menütext `#ver`, beide gleich). Daraus entstehen Release-Tag `v1.5.1` und der Versionsname der App. Gibt es das Release schon, wird nur gebaut, aber kein neues Release angelegt. Für ein neues Release also die Version erhöhen.
+
+Beim Start fragt das Spiel bei GitHub nach dem neuesten Release. Ist es neuer, erscheint ein Hinweis mit „Ignorieren“ und dem Haken „Diese Nachricht nicht mehr anzeigen“ (gilt nur für genau diese Version). Ohne Netz läuft das Spiel normal weiter.
 Das Spiel selbst liegt in `app/src/main/assets/index.html`.
 
 ## Wichtig
@@ -31,9 +33,10 @@ Geht der Schlüssel verloren, kann keine Update-Version mehr über die installie
 
 Die GitHub Action baut die APK nur, wenn vorher alle Prüfungen grün sind (Job „Prüfen und testen“):
 
-- `tests/release-check.mjs`: bricht ab, wenn `TEST_BUILD=true`, „alles freigeschaltet“ oder ein Test-Titel in der Spieldatei steht.
+- `tests/release-check.mjs`: bricht ab, wenn `TEST_BUILD=true`, „alles freigeschaltet“ oder ein Test-Titel in der Spieldatei steht oder `APP_VERSION` nicht zum Menütext passt.
 - `tests/module.mjs`: Aufteilen in Module und Zusammensetzen ergibt dieselbe Datei.
 - `tests/smoke.mjs`: öffnet das Spiel im Browser, startet jeden Modus, tippt, beendet die Runde, klickt Shop, Erfolge und Einstellungen durch und schlägt bei JS-Fehlern fehl.
+- `tests/update.mjs`: Update-Hinweis beim Start mit simulierter GitHub-Antwort: neuere, gleiche und ältere Version, Ignorieren, „nicht mehr anzeigen“ nur für genau diese Version, ohne Netz.
 - `tests/sync.mjs`: zwei simulierte Geräte mit einem Konto: Spielstand-Migration, Offline-Käufe auf beiden Geräten, alte App-Version, Erfolge nur einmal belohnt.
 
 Lokal: `npm install` und dann `npm test` (optional mit Pfad: `node tests/smoke.mjs datei.html`).
