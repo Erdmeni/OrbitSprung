@@ -30,12 +30,27 @@ jobs:
         run: node tests/smoke.mjs
       - name: Sync-Test (zwei Geräte, Staub-Buchführung)
         run: node tests/sync.mjs
+      - name: Update-Hinweis-Test (neue Version, Ignorieren, nicht mehr anzeigen, ohne Netz)
+        run: node tests/update.mjs
 
   build:
     needs: pruefen
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - name: Version aus der Spieldatei lesen
+        id: ver
+        run: |
+          VER=$(grep -oP "const APP_VERSION='\K[0-9.]+(?=')" app/src/main/assets/index.html)
+          [ -n "$VER" ] || { echo "::error::APP_VERSION fehlt in index.html"; exit 1; }
+          echo "version=$VER" >> "$GITHUB_OUTPUT"
+          echo "APP_VERSION=$VER" >> "$GITHUB_ENV"
+          if git ls-remote --exit-code --tags origin "refs/tags/v$VER" >/dev/null; then
+            echo "neu=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Release v$VER gibt es schon. Für ein neues Release APP_VERSION und #ver erhöhen."
+          else
+            echo "neu=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -64,10 +79,11 @@ jobs:
           ./gradlew assembleRelease --no-daemon
           cp app/build/outputs/apk/release/app-release.apk Orbitsprung.apk
       - name: Release veröffentlichen
+        if: steps.ver.outputs.neu == 'true'
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v1.${{ github.run_number }}
-          name: Orbitsprung 1.${{ github.run_number }}
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Orbitsprung ${{ steps.ver.outputs.version }}
           body: ${{ github.event.head_commit.message }}
           files: Orbitsprung.apk
           make_latest: true

@@ -19,6 +19,12 @@ if (!title) fail('Kein <title> gefunden.');
 if (/test/i.test(title)) fail(`Titel „${title}“ sieht nach Testversion aus.`);
 if (!/^<!doctype html>/i.test(html.trimStart())) fail('Datei beginnt nicht mit <!doctype html> (Skeleton-Zeile fehlt).');
 if (!/<\/html>\s*$/i.test(html)) fail('Datei endet nicht mit </html>.');
+// Versionsnummer: APP_VERSION (Update-Prüfung, Release-Tag) und Menütext müssen übereinstimmen
+const appVer = (code.match(/const\s+APP_VERSION\s*=\s*'([^']*)'/) || [])[1];
+const menuVer = ((code.match(/<div class="ver" id="ver">([^<]*)<\/div>/) || [])[1] || '').match(/\d+(?:\.\d+)+/);
+if (!appVer) fail("`const APP_VERSION='x.y.z';` fehlt.");
+else if (!/^\d+(\.\d+)+$/.test(appVer)) fail(`APP_VERSION „${appVer}“ ist keine Versionsnummer wie 1.5.1.`);
+else if (!menuVer || menuVer[0] !== appVer) fail(`Menütext #ver (${menuVer ? menuVer[0] : 'ohne Nummer'}) passt nicht zu APP_VERSION ${appVer}.`);
 if ((code.match(/<script>/g) || []).length !== (code.match(/<\/script>/g) || []).length) fail('<script>-Tags sind nicht ausgeglichen.');
 
 if (errors.length) {
@@ -26,4 +32,4 @@ if (errors.length) {
   console.error(`\n${errors.length} Problem(e) in ${file}. Keine APK bauen.`);
   process.exit(1);
 }
-console.log(`Release-Prüfung ok: ${file} (Titel „${title}“)`);
+console.log(`Release-Prüfung ok: ${file} (Titel „${title}“, Version ${appVer})`);

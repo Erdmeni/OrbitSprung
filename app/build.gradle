@@ -1,6 +1,8 @@
 plugins { id 'com.android.application' }
 
 def runNr = (System.getenv('GITHUB_RUN_NUMBER') ?: '1') as Integer
+// Versionsname = APP_VERSION aus der Spieldatei (setzt die GitHub Action), sonst 1.<Lauf-Nr.>
+def appVer = System.getenv('APP_VERSION') ?: "1.${runNr}"
 def ksFile = System.getenv('KEYSTORE_FILE')
 
 android {
@@ -11,7 +13,7 @@ android {
         minSdk 26
         targetSdk 34
         versionCode runNr
-        versionName "1.${runNr}"
+        versionName appVer
     }
     signingConfigs {
         release {

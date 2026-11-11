@@ -16,5 +16,6 @@ const n = (re, to, what) => { if (!re.test(s)) { console.error('Nicht gefunden: 
 n(/const\s+TEST_BUILD\s*=\s*(true|false)\s*;/, 'const TEST_BUILD=false;', 'const TEST_BUILD=…;');
 n(/<title>[^<]*<\/title>/, '<title>Orbitsprung</title>', '<title>');
 n(/(<div class="ver" id="ver">)[^<]*(<\/div>)/, `$1Orbitsprung${version ? ' ' + version : ''}$2`, 'Menütext #ver');
+if (version) n(/const\s+APP_VERSION\s*=\s*'[^']*'\s*;/, `const APP_VERSION='${version}';`, "const APP_VERSION='…';");
 writeFileSync(out, SKELETON + s.replace(/^\n+/, '') + '\n</body></html>');
 console.log(`Geschrieben: ${out}${version ? ' (Version ' + version + ')' : ''}`);

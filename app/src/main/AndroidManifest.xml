@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Nur für die Schriftarten von Google Fonts; das Spiel läuft auch komplett offline -->
+    <!-- Für die Schriftarten von Google Fonts und die Update-Prüfung beim Start; das Spiel läuft auch komplett offline -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
