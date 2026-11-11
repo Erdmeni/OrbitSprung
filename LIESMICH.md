@@ -26,3 +26,19 @@ Das Spiel selbst liegt in `app/src/main/assets/index.html`.
 
 `orbitsprung-release.jks` und `GitHub-Secrets.txt` sicher aufbewahren und **nicht** ins Repository hochladen.
 Geht der Schlüssel verloren, kann keine Update-Version mehr über die installierte App gespielt werden.
+
+## Prüfungen vor jedem Build
+
+Die GitHub Action baut die APK nur, wenn vorher alle Prüfungen grün sind (Job „Prüfen und testen“):
+
+- `tests/release-check.mjs`: bricht ab, wenn `TEST_BUILD=true`, „alles freigeschaltet“ oder ein Test-Titel in der Spieldatei steht.
+- `tests/module.mjs`: Aufteilen in Module und Zusammensetzen ergibt dieselbe Datei.
+- `tests/smoke.mjs`: öffnet das Spiel im Browser, startet jeden Modus, tippt, beendet die Runde, klickt Shop, Erfolge und Einstellungen durch und schlägt bei JS-Fehlern fehl.
+- `tests/sync.mjs`: zwei simulierte Geräte mit einem Konto: Spielstand-Migration, Offline-Käufe auf beiden Geräten, alte App-Version, Erfolge nur einmal belohnt.
+
+Lokal: `npm install` und dann `npm test` (optional mit Pfad: `node tests/smoke.mjs datei.html`).
+
+## Hilfsskripte
+
+- `node tools/release.mjs <test-artefakt.html> [version]`: macht aus der Testversion die App-Datei (`TEST_BUILD=false`, Titel und Menütext ohne „Tests“).
+- `node tools/split.mjs` teilt `index.html` zum Bearbeiten in Module unter `src/` (Stil, Oberfläche, je Abschnitt eine JS-Datei), `node tools/build.mjs` setzt sie wieder zu `index.html` zusammen. Die Quelle bleibt `index.html`, `src/` wird nicht eingecheckt.
