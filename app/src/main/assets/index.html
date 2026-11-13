@@ -323,6 +323,44 @@ body.shopping .mid{padding-block:0}
 .srow:last-child{border-bottom:0}
 .srow b{font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
 .srow.off b{color:var(--muted);font-weight:400}
+/* Bestenliste und Konto */
+.fld{width:100%;box-sizing:border-box;min-height:46px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:rgba(7,18,25,.7);color:var(--ink);font:16px var(--body);-webkit-user-select:text;user-select:text;touch-action:manipulation}
+.fld:focus{outline:2px solid var(--comet);outline-offset:1px;border-color:transparent}
+.form{display:flex;flex-direction:column;gap:10px}
+.form label{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;color:var(--muted)}
+.form a{color:var(--comet)}
+.ferr{margin:0;color:var(--flare)!important;font-size:13px!important}
+.note.ok{color:#9affc8}
+.code{font:800 19px var(--display);letter-spacing:.05em;text-align:center;padding:14px 8px;border-radius:12px;border:1px dashed var(--comet);color:var(--dust);background:rgba(255,180,84,.06);-webkit-user-select:text;user-select:text;word-break:break-all}
+.acchead{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:12px;background:var(--tile);border:1px solid var(--line)}
+.acchead strong{font-family:var(--display);font-size:20px;overflow:hidden;text-overflow:ellipsis}
+.acchead small{font-size:12px;color:var(--muted)}
+.adata{margin:0;max-height:46vh;overflow:auto;padding:10px;border-radius:10px;background:var(--tile);border:1px solid var(--line);font:11.5px/1.45 ui-monospace,monospace;color:#c9dedc;white-space:pre-wrap;word-break:break-word;-webkit-user-select:text;user-select:text}
+.atest{display:flex;flex-direction:column;gap:8px;margin-top:6px;padding-top:10px;border-top:1px dashed var(--line)}
+#acct{max-width:380px}
+.sub.lbm{grid-template-columns:repeat(3,1fr)}
+@media (min-width:520px){.sub.lbm{grid-template-columns:repeat(6,1fr)}}
+.lblist{display:flex;flex-direction:column;gap:2px}
+.lbrow{display:grid;grid-template-columns:2.4em 1fr auto;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;font-size:14px}
+.lblist .lbrow:nth-child(odd){background:var(--tile)}
+.lbrow .pl{font:800 13px var(--display);color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.lbrow .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}
+.lbrow .nm small{font-weight:400;color:var(--muted);font-size:11px;margin-left:6px}
+.lbrow .pt{font:800 14px var(--display);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.lbrow .pt small{display:block;font:400 11px var(--body);color:var(--muted)}
+.lbrow.top1 .pl{color:#ffd84d}.lbrow.top2 .pl{color:#dfe8ee}.lbrow.top3 .pl{color:#e5a26a}
+.lbrow.me{background:rgba(255,180,84,.13)!important;box-shadow:0 0 0 1px var(--comet) inset}
+.lbrow.me .nm{color:var(--comet)}
+.lbmsg{text-align:center;padding:28px 10px;color:var(--muted);font-size:13.5px;line-height:1.45;margin:0}
+.lbpin{flex:0 0 auto;display:flex;flex-direction:column;gap:6px;margin:0 calc(-1*var(--cx));padding:10px var(--cx) 0;border-top:1px solid var(--line)}
+.lbpin .note{font-size:12px;text-align:center}
+.pcount.btn{cursor:pointer;background:none;font-size:12px;max-width:45%;overflow:hidden;text-overflow:ellipsis}
+.goal .gt span[aria-hidden]{color:var(--comet);font-weight:800}
+#acct .btns .go.alt.warn{flex:1}
+/* Querformat (wenig Höhe): Reiter in eine Zeile, angeheftete Zeile weglassen, damit die Liste Platz hat */
+@media (max-height:520px){#lb .tabs{flex-direction:row;align-items:center}#lb .sub.lbm{flex:1;grid-template-columns:repeat(6,1fr)}#lb .seg2{flex:0 0 230px}#lb .seg .tab{min-height:34px}#lb .lbpin{display:none!important}#lb .shop-head h1{font-size:19px}}
+.go.ic{display:grid;place-items:center;padding-inline:12px}
+.go.ic svg{width:20px;height:20px}
 /* Mit Planetenzähler hat die Leiste vier Werte: auf schmalen Handys enger setzen, damit sich die Beschriftungen nicht berühren */
 @media (max-width:440px){.dock{gap:12px}}
 @media (max-width:360px){.dock{gap:9px}.dock .wallet{gap:4px}}
@@ -393,11 +431,12 @@ body.shopping .mid{padding-block:0}
       </div>
       </details>
       <div class="keys">Leertaste, Pfeil hoch oder Tippen</div>
-      <div class="ver" id="ver">Orbitsprung 1.5.2</div>
+      <div class="ver" id="ver">Orbitsprung 1.6</div>
       <div class="btns">
         <button class="go" id="start" type="button">Starten</button>
         <button class="go alt" id="shopFromMenu" type="button">Shop</button>
         <button class="go alt" id="achFromMenu" type="button" aria-label="Erfolge und Statistik">Erfolge</button>
+        <button class="go alt ic" id="lbFromMenu" type="button" aria-label="Bestenliste"><svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M6 3h8v5a4 4 0 0 1-8 0V3z"/><path d="M6 5H3.5v1.5A2.5 2.5 0 0 0 6 9M14 5h2.5v1.5A2.5 2.5 0 0 1 14 9M10 12v3M7 17h6M8 15h4v2H8z"/></svg></button>
       </div>
     </div>
 
@@ -413,6 +452,7 @@ body.shopping .mid{padding-block:0}
         <button class="go rv" id="revive" type="button">Zweite Chance</button>
         <p class="note" id="reviveNote"></p>
       </div>
+      <button class="goal" id="fLb" type="button" hidden></button>
       <div class="tiles">
         <div><span class="lbl">Planeten</span><strong id="fPlanets">0</strong></div>
         <div><span class="lbl">Staub</span><strong class="gain" id="fStaub">+0</strong></div>
@@ -447,6 +487,7 @@ body.shopping .mid{padding-block:0}
         <button class="opt" id="optVib" type="button" role="switch" aria-checked="true"><span><b>Vibration</b><small>Kurzes Ruckeln bei Absprung, Landung und Aufprall</small></span><i aria-hidden="true"></i></button>
         <button class="opt" id="slowmo" type="button" role="switch" aria-checked="true"><span><b>Zeitlupe</b><small>Verlangsamt die Umlaufbahn ab Tempo ×2,2</small></span><i aria-hidden="true"></i></button>
         <button class="opt" id="optTut" type="button"><span><b>Einführung wiederholen</b><small id="optTutTxt">Zeigt die kurze Anleitung in der nächsten Runde noch einmal</small></span></button>
+        <button class="opt" id="optAcct" type="button"><span><b>Konto und Bestenliste</b><small id="optAcctTxt">Nicht angemeldet</small></span></button>
         <button class="opt" id="optTest" type="button" role="switch" aria-checked="false" hidden><span><b>Kauf testen</b><small>Nur Testversion: sperrt Skins, Entdeckungen, Upgrades und Kaufmodi wieder. Staub bleibt.</small></span><i aria-hidden="true"></i></button>
       </div>
       <div class="ver" id="gfxInfo"></div>
@@ -471,6 +512,27 @@ body.shopping .mid{padding-block:0}
       </div></div>
       <div class="scroll" id="progScroll"><div class="psum" id="progBody"></div></div>
       <div class="btns"><p class="note" id="progNote">Erfolge bringen Sternstaub ✦.</p><button class="go" id="progBack" type="button">Zurück</button></div>
+    </div>
+
+    <div class="card shop" id="lb" hidden>
+      <div class="shop-head">
+        <h1>Besten<span>liste</span></h1>
+        <button class="pcount btn" id="lbAcct" type="button">Anmelden</button>
+      </div>
+      <div class="tabs">
+        <div class="sub lbm" role="tablist" id="lbModes"></div>
+        <div class="seg seg2" role="tablist"><button class="tab" type="button" role="tab" id="lbZa">Allzeit</button><button class="tab" type="button" role="tab" id="lbZb">Diese Woche</button></div>
+      </div>
+      <div class="scroll" id="lbScroll"><div class="lblist" id="lbList"></div></div>
+      <div class="lbpin" id="lbPin" hidden></div>
+      <div class="btns"><p class="note" id="lbNote" aria-live="polite"></p><button class="go" id="lbBack" type="button">Zurück</button></div>
+    </div>
+
+    <div class="card" id="acct" hidden>
+      <div class="lbl">Bestenliste</div>
+      <h1 id="acctTitle">Kon<span>to</span></h1>
+      <div class="form" id="acctBody"></div>
+      <div class="btns"><button class="go alt" id="acctBack" type="button">Zurück</button><button class="go" id="acctGo" type="button">Anmelden</button></div>
     </div>
 
     <div class="card shop" id="shop" hidden>
@@ -1072,7 +1134,7 @@ function revive(){
   if(save.staub<c){ SFX.deny(); buzz([15,35,15]); return; }
   if(typeof addStaub==='function') addStaub(-c); else save.staub-=c;
   persist(); showStaub(true);
-  runRevived=true; zinsBase=score; unfoldRun();
+  runRevived=true; zinsBase=score; unfoldRun(); lbRunRevive();
   let pl=P.pl;
   // Nie auf einem instabilen Stern weitermachen (der Countdown liefe sofort wieder)
   if(!pl||pl.dead||!planets.includes(pl)||pl.type==='nova') pl=planets.filter(p=>p.seen&&!p.dead&&p.type!=='bh'&&p.type!=='wurm'&&p.type!=='nova').sort((a,b)=>a.y-b.y)[0]||planets.find(p=>!p.dead);
@@ -1116,7 +1178,7 @@ if(!save.sk) save.sk={}; if(!save.own) save.own={};
 for(const k in SKINSETS){ if(!save.sk[k]) save.sk[k]=SKINSETS[k].items[0].id; if(!save.own[k]) save.own[k]=[SKINSETS[k].items[0].id]; }
 const skinOf=k=>SKINSETS[k].items.find(i=>i.id===save.sk[k])||SKINSETS[k].items[0];
 // Spielversion: muss zum Menütext #ver passen. Die GitHub Action nimmt sie als Release-Tag v<APP_VERSION>
-const APP_VERSION='1.5.2';
+const APP_VERSION='1.6';
 // Nur in der Test-Artefakt-Version true: alle Skins, Spielmodi und Entdeckungen gehören dir, dazu viel Staub für Upgrades
 const TEST_BUILD=false;
 function testUnlock(){
@@ -2268,7 +2330,7 @@ function die(reason='miss'){
   if(rec){setBest(mode,score); persist(); showBest();}
   if(tut&&tut.step>=2) tutEnd(); else if(tut){ tut=null; tutShow(); }
   foldRun(); checkAch(true); persist();
-  renderOver(old,rec); goalsOver(reason,rec);
+  renderOver(old,rec); goalsOver(reason,rec); lbRunEnd();
   setTimeout(()=>{ if(state==='over'){ elOver.hidden=false; elOver.scrollTop=0; countUp($('fScore'),score); if(rec&&reason!=='quit') SFX.rec(); } },550);
 }
 
@@ -3696,7 +3758,7 @@ function frame(now){
 document.addEventListener('visibilitychange',()=>{paused=document.hidden; last=performance.now(); if(document.hidden){ flushPersist(); if(state==='play') pauseGame(); } musicSync();});
 window.addEventListener('pagehide',flushPersist);
 
-function start(){ if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); state='play'; elMenu.hidden=true; elOver.hidden=true; elShop.hidden=true; elPause.hidden=true; document.body.classList.remove('dim','shopping'); hintT=0; fpsMon.cool=2; fpsMon.acc=0; fpsMon.n=0; fpsMon.slow=0; timeLeft=60; timerTxt=''; updTimer(); SFX.start(); tutStart(); goalsStart(); }
+function start(){ if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); state='play'; elMenu.hidden=true; elOver.hidden=true; elShop.hidden=true; elPause.hidden=true; document.body.classList.remove('dim','shopping'); hintT=0; fpsMon.cool=2; fpsMon.acc=0; fpsMon.n=0; fpsMon.slow=0; timeLeft=60; timerTxt=''; updTimer(); SFX.start(); tutStart(); goalsStart(); lbRunStart(); }
 // ---------- Pause und Einstellungen: eine Karte für beides ----------
 let hudState='';
 function hudBtns(){
@@ -3718,7 +3780,7 @@ function showSheet(inPlay){
   renderOpts(); updGfxInfo();
   $('pTitle').innerHTML=inPlay?'Pau<span>se</span>':'Einstel<span>lungen</span>';
   $('pMode').textContent=inPlay?'Modus: '+MODES[mode].name:'Orbitsprung';
-  $('pStat').hidden=!inPlay; $('pBtnsPlay').hidden=!inPlay; $('pBtnsMenu').hidden=inPlay; $('optTut').hidden=inPlay;
+  $('pStat').hidden=!inPlay; $('pBtnsPlay').hidden=!inPlay; $('pBtnsMenu').hidden=inPlay; $('optTut').hidden=inPlay; $('optAcct').hidden=inPlay; lbOptTxt();
   $('optTutTxt').textContent=save.tut?'Zeigt die kurze Anleitung in der nächsten Runde noch einmal':'Die Anleitung startet mit der nächsten Runde';
   $('pKeys').textContent=inPlay?'Esc oder Leertaste: weiter':'Esc: zurück';
   if(inPlay){ $('pScore').textContent=score; $('pPlanets').textContent=passedN; $('pSector').textContent=runSec; }
@@ -3768,6 +3830,8 @@ window.addEventListener('keydown',e=>{
   if(state==='shop'){ if(e.code==='Escape'){ if(conf){ closeConf(); SFX.ui(); } else closeShop(); } return; }
   if(state==='settings'){ if(e.code==='Escape') closeSettings(); return; }
   if(state==='prog'){ if(e.code==='Escape') closeProg(); return; }
+  if(state==='lb'){ if(e.code==='Escape') lbClose(); return; }
+  if(state==='acct'){ if(e.code==='Escape') $('acctBack').click(); return; }
   if(state==='pause'){
     if(e.code==='Escape'||(e.code==='Space'&&!(e.target.closest&&e.target.closest('button,input')))){ e.preventDefault(); resumeGame(); }
     return;
@@ -4138,6 +4202,592 @@ $('achFromMenu').addEventListener('click',()=>openProg('ach'));
 $('fGoal').addEventListener('click',()=>openProg('ach'));
 $('progBack').addEventListener('click',closeProg);
 for(const [id,t] of [['ptab-ach','ach'],['ptab-st','st']]) $(id).addEventListener('click',()=>{ if(ptab!==t){ ptab=t; SFX.ui(); renderProg(); $('progScroll').scrollTop=0; } });
+
+// ---------- Bestenliste mit Konto (eigener Server) ----------
+// Grundregel: Das Spiel wartet nie auf das Netz. Ergebnisse kommen in eine Warteschlange auf dem Gerät und werden
+// übertragen, sobald der Server erreichbar ist. Jede Runde hat eine eigene ID (rid), doppeltes Senden schadet nicht.
+// Konto, Warteschlange und Zwischenspeicher liegen bewusst außerhalb von save (eigener Schlüssel, kein Spielstand-Sync).
+const LB_URL='https://orbitsprung-erdmeni.ipv64.net', LB_KEY='orbitsprung.lb', LB_TIMEOUT=6000;
+const LB_MODES=['klassik','sprint','chaos','feld','hyper','daily'];
+const LB_SHORT={klassik:'Klassisch',sprint:'Sprint',chaos:'Chaos',feld:'Feld',hyper:'Hyper',daily:'Tagesflug'};
+let lbS={}; try{ lbS=JSON.parse(localStorage.getItem(LB_KEY)||'{}')||{}; }catch(e){ lbS={}; }
+if(!Array.isArray(lbS.queue)) lbS.queue=[]; if(!lbS.sent||typeof lbS.sent!=='object') lbS.sent={}; if(!lbS.cache||typeof lbS.cache!=='object') lbS.cache={};
+if(TEST_BUILD&&lbS.srv!=='echt') lbS.srv='schein';
+function lbSave(){ try{ localStorage.setItem(LB_KEY,JSON.stringify(lbS)); }catch(e){} }
+let lbNet='?', lbBusy=false, lbFail=0, lbNextTry=0, lbTimer=0, lbRun=null, lbAnon=null, lbOverRid=null, lbRes={};
+const lbNorm=n=>String(n||'').normalize('NFC').toLowerCase();
+const lbEsc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const lbRid=()=>{ const a=new Uint8Array(12); try{ crypto.getRandomValues(a); }catch(e){ for(let i=0;i<12;i++) a[i]=Math.random()*256|0; } return Array.from(a,b=>(b%36).toString(36)).join('')+Date.now().toString(36); };
+// ISO-Woche wie auf dem Server (Montag bis Sonntag)
+function lbWeek(t){
+  const d=new Date(t+'T00:00:00Z'), wt=(d.getUTCDay()+6)%7; d.setUTCDate(d.getUTCDate()-wt+3);
+  const y=d.getUTCFullYear(), j1=new Date(Date.UTC(y,0,4));
+  return y+'-W'+String(1+Math.round(((d-j1)/864e5-3+((j1.getUTCDay()+6)%7))/7)).padStart(2,'0');
+}
+const lbDayAdd=(t,n)=>{ const d=new Date(t+'T12:00:00'); d.setDate(d.getDate()+n); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); };
+
+// ---- Verbindung: echter Server per fetch, in der Testversion wahlweise eingebauter Schein-Server ----
+async function lbCall(method,path,body,auth=true){
+  const tok=auth?lbS.token:null;
+  if(TEST_BUILD&&lbS.srv!=='echt') return mockCall(method,path,body,tok);
+  if(typeof fetch!=='function') throw {net:true};
+  const ac=typeof AbortController==='function'?new AbortController():null, to=ac?setTimeout(()=>ac.abort(),LB_TIMEOUT):0;
+  try{
+    const h={'Content-Type':'application/json'}; if(tok) h.Authorization='Bearer '+tok;
+    const r=await fetch(LB_URL+path,{method,headers:h,body:body?JSON.stringify(body):undefined,signal:ac?ac.signal:undefined,cache:'no-store'});
+    let j={}; try{ j=await r.json(); }catch(e){}
+    return {status:r.status,j:j||{}};
+  }catch(e){ throw {net:true}; }
+  finally{ clearTimeout(to); }
+}
+
+// ---- Runde: Start (Ticket holen, ohne zu warten), Ende (Ergebnis in die Warteschlange) ----
+function lbTicket(r){
+  if(!lbS.token||!r) return;
+  lbCall('POST','/v1/runde',{modus:r.modus}).then(x=>{
+    if(x.status===200&&x.j.ticket){ if(lbRun===r) r.ticket=x.j.ticket; lbNet='ok'; }
+    else if(x.status===401||x.status===403) lbAuthLost(x.j.fehler);
+  }).catch(()=>{ lbNet='off'; });
+}
+function lbRunStart(){
+  if(!LB_MODES.includes(mode)){ lbRun=null; return; }
+  lbRun={rid:lbRid(),modus:mode,tag:mode==='daily'?dayState().d:today(),ticket:null};
+  lbTicket(lbRun);
+}
+// Zweite Chance: dieselbe Runde geht weiter (gleiches Ticket), das spätere Ergebnis bekommt eine neue ID
+function lbRunRevive(){ if(lbRun) lbRun.rid=lbRid(); }
+function lbEntry(){
+  const e={rid:lbRun.rid,modus:lbRun.modus,tag:lbRun.tag,punkte:Math.round(score),planeten:passedN,dauer:Math.round((run.time||0)*1000),version:APP_VERSION};
+  if(lbRun.ticket) e.ticket=lbRun.ticket;
+  return e;
+}
+// true, wenn das Ergebnis einen Bestwert verbessert, den der Server noch nicht kennt (nur dann wird gesendet)
+function lbImproves(e,mark){
+  const s=lbS.sent[e.modus]||(lbS.sent[e.modus]={});
+  let up=false;
+  if(e.modus==='daily'){ const k='d'+e.tag; if(!s.d||s.d.k!==k||e.punkte>s.d.n){ up=true; if(mark) s.d={k,n:e.punkte}; } }
+  else{
+    if(e.punkte>(s.all||0)){ up=true; if(mark) s.all=e.punkte; }
+    const k=lbWeek(e.tag); if(!s.w||s.w.k!==k||e.punkte>s.w.n){ up=true; if(mark) s.w={k,n:e.punkte}; }
+  }
+  return up;
+}
+function lbQueue(e){
+  if(!lbImproves(e,true)) return false;
+  lbS.queue.push(e);
+  // Höchstens 50 warten: zuerst die ältesten, schwächsten verdrängen
+  while(lbS.queue.length>50){ let w=0; for(let i=1;i<lbS.queue.length-1;i++) if(lbS.queue[i].punkte<lbS.queue[w].punkte) w=i; lbS.queue.splice(w,1); }
+  lbSave(); return true;
+}
+function lbRunEnd(){
+  const r=lbRun; lbOverRid=null;
+  if(!r||!(score>0)){ fLbShow(r&&lbS.token?'view':null); return; }
+  const e=lbEntry();
+  if(!lbS.token){ lbAnon={e,at:Date.now()}; fLbShow('login'); return; }
+  if(lbQueue(e)){ lbOverRid=e.rid; fLbShow('pending'); lbFlush(true); }
+  else fLbShow('view');
+}
+
+// ---- Übertragen der Warteschlange ----
+function lbBackoff(){
+  lbFail++; const d=[30e3,120e3,600e3][Math.min(2,lbFail-1)];
+  lbNextTry=Date.now()+d; clearTimeout(lbTimer); lbTimer=setTimeout(()=>lbFlush(false),d);
+}
+async function lbFlush(force){
+  if(lbBusy||!lbS.token||!lbS.queue.length) return;
+  if(!force&&Date.now()<lbNextTry) return;
+  lbBusy=true;
+  const batch=lbS.queue.slice(0,20);
+  try{
+    const x=await lbCall('POST','/v1/ergebnisse',{ergebnisse:batch,test:(TEST_BUILD&&lbS.srv==='echt')||undefined});
+    if(x.status===200&&Array.isArray(x.j.ergebnisse)){
+      lbNet='ok'; lbFail=0; lbNextTry=0;
+      const done=new Set();
+      for(const a of x.j.ergebnisse){ if(!a||!a.rid) continue; done.add(a.rid); lbRes[a.rid]=a; if(!a.ok){ lbS.lastReject={grund:a.grund||'Abgelehnt',at:Date.now()}; } }
+      lbS.queue=lbS.queue.filter(e=>!done.has(e.rid));
+      lbSave();
+      if(lbS.queue.length) setTimeout(()=>lbFlush(true),300);
+    }else if(x.status===401||x.status===403){ lbAuthLost(x.j.fehler); }
+    else if(x.status===400){ lbS.queue.splice(0,batch.length); lbSave(); }
+    else{ lbNet=x.status>=500?'off':lbNet; lbBackoff(); }
+  }catch(e){ lbNet='off'; lbBackoff(); }
+  finally{ lbBusy=false; lbAfterSync(); }
+}
+function lbAfterSync(){
+  if(lbOverRid&&state==='over'){
+    const a=lbRes[lbOverRid];
+    if(a) fLbShow(a.ok?'done':'rejected',a);
+    else if(lbS.queue.some(e=>e.rid===lbOverRid)&&!lbBusy) fLbShow(lbS.token?'offline':'login');
+  }
+  if(state==='acct'&&acctMode==='main') acctRender();
+  if(state==='lb') lbRenderNote();
+  lbOptTxt();
+}
+function lbAuthLost(msg){
+  lbS.needLogin=lbS.name||lbS.needLogin||null; lbS.token=null; lbS.authMsg=msg||'Anmeldung abgelaufen. Bitte neu anmelden.';
+  lbSave(); lbAfterSync();
+}
+// Nach erfolgreicher Anmeldung: Warteschlange gehört nur zum selben Konto
+function lbLoggedIn(j){
+  const owner=lbNorm(j.name);
+  if(lbS.qOwner&&lbS.qOwner!==owner){ lbS.queue=[]; lbS.sent={}; }
+  lbS.qOwner=owner; lbS.token=j.token; lbS.name=j.name; lbS.needLogin=null; lbS.authMsg=null; lbS.lastReject=null; lbNet='ok';
+  // Die Runde direkt vor der Anmeldung zählt noch (höchstens eine Stunde alt)
+  if(lbAnon&&Date.now()-lbAnon.at<3600e3&&lbQueue(lbAnon.e)) lbOverRid=lbAnon.e.rid;
+  lbAnon=null; lbSave(); lbFlush(true);
+}
+function lbLocalLogout(){ lbS.token=null; lbS.name=null; lbS.needLogin=null; lbS.authMsg=null; lbS.queue=[]; lbS.sent={}; lbS.qOwner=null; lbS.lastReject=null; lbSave(); }
+function lbStatusTxt(){
+  const n=lbS.queue.length, w=n===1?'1 Ergebnis wartet':n+' Ergebnisse warten';
+  if(!lbS.token) return lbS.needLogin?'Abgemeldet · bitte neu anmelden':'Nicht angemeldet · Rekorde nur auf diesem Gerät';
+  if(n&&lbNet==='off') return 'Offline · '+w+' auf Übertragung';
+  if(n) return w+' auf Übertragung';
+  if(lbNet==='off') return 'Angemeldet als '+lbS.name+' · Server gerade nicht erreichbar';
+  return 'Angemeldet als '+lbS.name+(lbNet==='ok'?' · alles übertragen':'');
+}
+function lbOptTxt(){ const e=$('optAcctTxt'); if(e) e.textContent=lbStatusTxt(); }
+setTimeout(()=>lbFlush(true),1500);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') lbFlush(true); });
+window.addEventListener('online',()=>lbFlush(true));
+
+// ---- Endkarte: Platz oder Status der Übertragung ----
+let fLbKind=null;
+function fLbShow(kind,a){
+  const b=$('fLb'); fLbKind=kind;
+  if(!kind||!LB_MODES.includes(lbRun?lbRun.modus:mode)){ b.hidden=true; return; }
+  const M=lbRun?lbRun.modus:mode, mn=M==='daily'?'Tagesflug':MODES[M].name;
+  let t='', s='';
+  if(kind==='login'){ t='Mit Konto in die Bestenliste'; s='Anmelden oder Konto anlegen. Diese Runde zählt dann noch.'; }
+  else if(kind==='pending'){ t='Wird übertragen …'; s='Bestenliste '+mn; }
+  else if(kind==='offline'){ t='Offline gespielt'; s='Dein Ergebnis wird übertragen, sobald du online bist.'; }
+  else if(kind==='rejected'){ t='Nicht gewertet'; s=(a&&a.grund)||'Der Server hat das Ergebnis abgelehnt.'; }
+  else if(kind==='view'){ t='Bestenliste ansehen'; s=mn; }
+  else if(kind==='done'){
+    const p=(a&&a.plaetze)||{}, f=x=>`Platz ${nf(x.platz)} von ${nf(x.von)}`;
+    if(p.tag){ t=f(p.tag)+' heute'; s='Tagesflug · '+(p.tag.rekord?'dein neuer Tagesbestwert':'dein Tagesbestwert '+nf(p.tag.punkte)); }
+    else{ t=p.woche?f(p.woche)+' diese Woche':'Übertragen'; s=p.all?'Allzeit: '+f(p.all)+' · '+mn:mn; }
+  }
+  b.innerHTML=`<span class="lbl">Bestenliste</span><div class="gt"><b></b><span aria-hidden="true">›</span></div><small></small>`;
+  b.querySelector('b').textContent=t; b.querySelector('small').textContent=s;
+  b.hidden=false;
+}
+
+// ---- Bildschirm Bestenliste ----
+let lbView={modus:'klassik',zr:'all'}, lbFrom='menu', lbLoading=false;
+function lbOpen(m){
+  if(state!=='menu'&&state!=='over') return;
+  lbFrom=state; state='lb';
+  if(m&&LB_MODES.includes(m)) lbView.modus=m; else if(LB_MODES.includes(mode)) lbView.modus=mode;
+  if(lbView.modus==='daily'&&lbView.zr!=='heute'&&lbView.zr!=='gestern') lbView.zr='heute';
+  if(lbView.modus!=='daily'&&lbView.zr!=='all'&&lbView.zr!=='woche') lbView.zr='all';
+  elMenu.hidden=true; elOver.hidden=true; $('lb').hidden=false; document.body.classList.add('shopping');
+  lbRender(); lbLoad(); lbFlush(true); SFX.ui();
+}
+function lbClose(){
+  if(state!=='lb') return;
+  state=lbFrom; $('lb').hidden=true; document.body.classList.remove('shopping');
+  if(state==='menu') elMenu.hidden=false; else if(state==='over') elOver.hidden=false;
+  SFX.ui();
+}
+function lbQuery(){
+  const v=lbView, t=today();
+  if(v.modus==='daily') return {modus:'daily',zeitraum:'tag',tag:v.zr==='gestern'?lbDayAdd(t,-1):t};
+  return {modus:v.modus,zeitraum:v.zr,tag:t};
+}
+const lbCKey=q=>(lbS.token?lbNorm(lbS.name):'-')+'|'+q.modus+'|'+(q.modus==='daily'?q.tag:q.zeitraum==='woche'?lbWeek(q.tag):'all');
+async function lbLoad(){
+  const q=lbQuery(), k=lbCKey(q);
+  lbLoading=true; lbRenderList();
+  try{
+    const x=await lbCall('GET',`/v1/liste?modus=${q.modus}&zeitraum=${q.zeitraum}&tag=${q.tag}&anzahl=50`);
+    if(x.status===200&&Array.isArray(x.j.eintraege)){
+      lbNet='ok'; lbS.cache[k]={d:x.j,at:Date.now()};
+      // Zwischenspeicher klein halten
+      const ks=Object.keys(lbS.cache); if(ks.length>40){ ks.sort((a,b)=>lbS.cache[a].at-lbS.cache[b].at); for(const o of ks.slice(0,ks.length-40)) delete lbS.cache[o]; }
+      lbSave();
+    }else if(x.status===403) lbAuthLost(x.j.fehler);
+  }catch(e){ lbNet='off'; }
+  if(lbCKey(lbQuery())!==k) return; // inzwischen anderer Reiter
+  lbLoading=false; if(state==='lb') lbRenderList();
+}
+function lbRender(){
+  const tabs=$('lbModes'); tabs.innerHTML='';
+  for(const m of LB_MODES){
+    const b=document.createElement('button'); b.className='tab'; b.type='button'; b.setAttribute('role','tab');
+    b.textContent=LB_SHORT[m]; b.setAttribute('aria-selected',String(lbView.modus===m));
+    b.addEventListener('click',()=>{ if(lbView.modus===m) return; lbView.modus=m; lbView.zr=m==='daily'?'heute':'all'; SFX.ui(); lbRender(); lbLoad(); });
+    tabs.appendChild(b);
+  }
+  const d=lbView.modus==='daily', za=$('lbZa'), zb=$('lbZb');
+  za.textContent=d?'Heute':'Allzeit'; zb.textContent=d?'Gestern':'Diese Woche';
+  za.setAttribute('aria-selected',String(lbView.zr===(d?'heute':'all'))); zb.setAttribute('aria-selected',String(lbView.zr===(d?'gestern':'woche')));
+  $('lbAcct').textContent=lbS.token?lbS.name:'Anmelden';
+  lbRenderList();
+}
+function lbRow(e,cls){
+  const r=document.createElement('div'); r.className='lbrow'+(e.platz<=3?' top'+e.platz:'')+(e.ich?' me':'')+(cls?' '+cls:'');
+  r.innerHTML=`<span class="pl">${nf(e.platz)}</span><span class="nm"></span><span class="pt">${nf(e.punkte)}<small>${nf(e.planeten)} Planeten</small></span>`;
+  const nm=r.querySelector('.nm'); nm.textContent=e.name;
+  if(e.offline){ const o=document.createElement('small'); o.textContent='offline'; o.title='Ohne Verbindung gespielt und später übertragen'; nm.appendChild(o); }
+  return r;
+}
+function lbRenderList(){
+  const q=lbQuery(), c=lbS.cache[lbCKey(q)], L=$('lbList'), pin=$('lbPin');
+  L.innerHTML=''; pin.innerHTML=''; pin.hidden=true;
+  const msg=t=>{ const p=document.createElement('p'); p.className='lbmsg'; p.textContent=t; L.appendChild(p); };
+  if(!c){ msg(lbLoading?'Lade Bestenliste …':'Keine Verbindung zum Server. Sobald du online bist, erscheint hier die Liste.'); }
+  else if(!c.d.eintraege.length){ msg(q.modus==='daily'?'Heute hat noch niemand den Tagesflug beendet. Sei die erste Person!':'Hier steht noch niemand. Sei die erste Person!'); }
+  else for(const e of c.d.eintraege) L.appendChild(lbRow(e));
+  // Eigene Zeile unten angeheftet, wenn sie nicht in der Liste steht
+  if(!lbS.token){
+    const b=document.createElement('button'); b.type='button'; b.className='goal'; b.innerHTML='<div class="gt"><b>Melde dich an, um mitzuspielen</b><span aria-hidden="true">›</span></div><small>Konto mit Name und Passwort, ohne E-Mail.</small>';
+    b.addEventListener('click',()=>acctOpen()); pin.appendChild(b); pin.hidden=false;
+  }else if(c&&c.d.ich&&!c.d.eintraege.some(e=>e.ich)){
+    const me=Object.assign({ich:true},c.d.ich); pin.appendChild(lbRow(me)); const s=document.createElement('p'); s.className='note'; s.textContent=`Dein Platz ${nf(me.platz)} von ${nf(me.von)}`+(me.test?' · Testrunde, nur für dich sichtbar':''); pin.appendChild(s); pin.hidden=false;
+  }else if(c&&!c.d.ich&&lbS.token){
+    const s=document.createElement('p'); s.className='note'; s.textContent='Du stehst hier noch nicht. Beende eine Runde in diesem Modus.'; pin.appendChild(s); pin.hidden=false;
+  }
+  lbRenderNote();
+}
+function lbRenderNote(){
+  const q=lbQuery(), c=lbS.cache[lbCKey(q)], n=$('lbNote');
+  const hh=t=>new Date(t).toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+  let t='';
+  if(lbLoading&&c) t='Aktualisiere … · Stand '+hh(c.at);
+  else if(lbLoading) t='Lade …';
+  else if(c&&lbNet==='off') t='Offline · Stand von '+hh(c.at);
+  else if(c) t='Stand '+hh(c.at)+(c.d.gesamt?' · '+nf(c.d.gesamt)+(c.d.gesamt===1?' Person':' Personen'):'');
+  else t='Offline';
+  const w=lbS.queue.length; if(lbS.token&&w) t+=' · '+(w===1?'1 Ergebnis wartet':w+' Ergebnisse warten');
+  n.textContent=t;
+}
+$('lbFromMenu').addEventListener('click',()=>lbOpen());
+$('lbBack').addEventListener('click',lbClose);
+$('lbAcct').addEventListener('click',()=>acctOpen());
+$('lbZa').addEventListener('click',()=>{ const z=lbView.modus==='daily'?'heute':'all'; if(lbView.zr!==z){ lbView.zr=z; SFX.ui(); lbRender(); lbLoad(); } });
+$('lbZb').addEventListener('click',()=>{ const z=lbView.modus==='daily'?'gestern':'woche'; if(lbView.zr!==z){ lbView.zr=z; SFX.ui(); lbRender(); lbLoad(); } });
+$('fLb').addEventListener('click',()=>{ if(fLbKind==='login') acctOpen(); else lbOpen(lbRun?lbRun.modus:mode); });
+
+// ---- Bildschirm Konto ----
+let acctMode='login', acctFrom=null, acctErr='', acctBusy=false, acctCode='', acctData='', acctInfo='';
+function acctOpen(){
+  const els={menu:elMenu,over:elOver,settings:elPause,lb:$('lb')};
+  if(!els[state]) return;
+  acctFrom={state,el:els[state]}; acctFrom.el.hidden=true; state='acct';
+  document.body.classList.add('shopping'); $('acct').hidden=false;
+  acctMode=lbS.token?'main':'login'; acctErr=''; acctInfo=''; acctRender(); SFX.ui();
+}
+function acctClose(){
+  if(state!=='acct'||acctBusy) return;
+  $('acct').hidden=true; state=acctFrom.state; acctFrom.el.hidden=false; acctCode=''; acctData='';
+  if(state!=='lb') document.body.classList.remove('shopping');
+  if(state==='lb'){ lbRender(); lbLoad(); }
+  if(state==='settings') lbOptTxt();
+  if(state==='over'&&lbOverRid){ const a=lbRes[lbOverRid]; fLbShow(a?(a.ok?'done':'rejected'):(lbS.queue.some(e=>e.rid===lbOverRid)?(lbBusy?'pending':'offline'):'view'),a); }
+  else if(state==='over'&&lbS.token&&fLbKind==='login') fLbShow('view');
+  SFX.ui();
+}
+const acctField=(id,label,type,ac,val)=>`<label>${label}<input class="fld" id="${id}" type="${type}" autocomplete="${ac}" autocapitalize="off" autocorrect="off" spellcheck="false" value="${lbEsc(val||'')}"></label>`;
+function acctRender(){
+  const B=$('acctBody'), go=$('acctGo'), back=$('acctBack'), H=$('acctTitle');
+  let h='';
+  go.hidden=false; go.disabled=acctBusy; back.textContent='Zurück'; go.classList.remove('warn','alt');
+  const tabs=`<div class="seg" role="tablist"><button class="tab" type="button" data-am="login" aria-selected="${acctMode==='login'}">Anmelden</button><button class="tab" type="button" data-am="reg" aria-selected="${acctMode==='reg'}">Neu</button><button class="tab" type="button" data-am="code" aria-selected="${acctMode==='code'}">Code</button></div>`;
+  const nameHint=lbS.needLogin||'';
+  if(acctMode==='login'){
+    H.innerHTML='Anmel<span>den</span>';
+    h=tabs+(lbS.authMsg?`<p class="note">${lbEsc(lbS.authMsg)}</p>`:'<p class="note">Mit Konto stehst du in der Bestenliste. Ohne Konto bleibt alles wie bisher auf diesem Gerät.</p>')
+      +acctField('aName','Name','text','username',nameHint)+acctField('aPw','Passwort','password','current-password');
+    go.textContent=acctBusy?'Moment …':'Anmelden';
+  }else if(acctMode==='reg'){
+    H.innerHTML='Konto <span>anlegen</span>';
+    h=tabs+'<p class="note">Wähle einen Namen für die Bestenliste. Bitte nicht deinen echten vollen Namen. Eine E-Mail-Adresse brauchst du nicht.</p>'
+      +acctField('aName','Name (3 bis 16 Zeichen)','text','username')+acctField('aPw','Passwort (mindestens 8 Zeichen)','password','new-password')
+      +`<button class="opt" id="aOk" type="button" role="switch" aria-checked="false"><span><b>Name und Punkte sind öffentlich</b><small>Alle Spieler sehen deinen Namen und deine Punkte. Ich bin mindestens 16 oder habe die Erlaubnis meiner Eltern.</small></span><i aria-hidden="true"></i></button>`
+      +`<p class="note"><a href="${LB_URL}/datenschutz" target="_blank" rel="noopener">Datenschutz</a></p>`;
+    go.textContent=acctBusy?'Moment …':'Konto anlegen';
+  }else if(acctMode==='code'){
+    H.innerHTML='Passwort <span>vergessen</span>';
+    h=tabs+'<p class="note">Mit dem Wiederherstellungscode, den du beim Anlegen bekommen hast, setzt du ein neues Passwort.</p>'
+      +acctField('aName','Name','text','username',nameHint)+acctField('aCode','Wiederherstellungscode','text','off')+acctField('aPw','Neues Passwort','password','new-password');
+    go.textContent=acctBusy?'Moment …':'Neues Passwort setzen';
+  }else if(acctMode==='showcode'){
+    H.innerHTML='Dein <span>Code</span>';
+    h=`<p class="note">Schreib dir diesen Wiederherstellungscode auf. Nur damit kommst du wieder an dein Konto, wenn du das Passwort vergisst. Er wird nur jetzt angezeigt.</p><div class="code" id="aCodeOut">${lbEsc(acctCode)}</div><button class="opt" id="aCopy" type="button"><span><b>Code kopieren</b><small id="aCopyTxt">In die Zwischenablage</small></span></button>`;
+    go.textContent='Ich habe ihn notiert'; back.textContent='Zurück';
+  }else if(acctMode==='main'){
+    H.innerHTML='Kon<span>to</span>';
+    const rj=lbS.lastReject&&Date.now()-lbS.lastReject.at<864e5?`<p class="note">Zuletzt nicht gewertet: ${lbEsc(lbS.lastReject.grund)}</p>`:'';
+    h=`<div class="acchead"><span class="lbl">Angemeldet als</span><strong>${lbEsc(lbS.name||'')}</strong><small>${lbEsc(lbStatusTxt())}</small></div>`+rj
+      +(acctInfo?`<p class="note ok">${lbEsc(acctInfo)}</p>`:'')
+      +`<button class="opt" id="aToLb" type="button"><span><b>Bestenliste ansehen</b><small>Alle Modi, Woche und Tagesflug</small></span></button>`
+      +`<button class="opt" id="aSync" type="button"><span><b>Jetzt übertragen</b><small>${lbS.queue.length?lbEsc(lbStatusTxt()):'Nichts offen'}</small></span></button>`
+      +`<button class="opt" id="aRen" type="button"><span><b>Name ändern</b><small>Einmal pro Woche möglich</small></span></button>`
+      +`<button class="opt" id="aData" type="button"><span><b>Meine Daten</b><small>Alles ansehen, was der Server über dich speichert</small></span></button>`
+      +`<button class="opt" id="aDel" type="button"><span><b>Konto löschen</b><small>Löscht Konto und alle Einträge sofort</small></span></button>`
+      +`<p class="note"><a href="${LB_URL}/datenschutz" target="_blank" rel="noopener">Datenschutz</a></p>`;
+    go.textContent='Abmelden'; go.classList.add('warn','alt');
+  }else if(acctMode==='rename'){
+    H.innerHTML='Name <span>ändern</span>';
+    h='<p class="note">Der neue Name erscheint sofort in allen Listen. Den alten Namen kann 30 Tage lang niemand anderes nehmen.</p>'+acctField('aName','Neuer Name','text','username',lbS.name);
+    go.textContent=acctBusy?'Moment …':'Speichern';
+  }else if(acctMode==='delete'){
+    H.innerHTML='Konto <span>löschen</span>';
+    h=`<p class="note">Dein Konto <b>${lbEsc(lbS.name||'')}</b> und alle deine Einträge werden sofort und endgültig gelöscht. Dein Spielstand auf diesem Gerät bleibt.</p>`+acctField('aPw','Passwort zur Bestätigung','password','current-password');
+    go.textContent=acctBusy?'Moment …':'Endgültig löschen'; go.classList.add('warn','alt');
+  }else if(acctMode==='data'){
+    H.innerHTML='Meine <span>Daten</span>';
+    h=`<pre class="adata" id="aDataOut">${lbEsc(acctData||'Lade …')}</pre>`;
+    go.hidden=true;
+  }
+  if(acctErr) h+=`<p class="ferr" role="alert">${lbEsc(acctErr)}</p>`;
+  if(TEST_BUILD&&(acctMode==='main'||acctMode==='login'||acctMode==='reg')){
+    h+=`<div class="atest"><span class="lbl">Nur Testversion</span>`
+      +`<button class="opt" id="tSrv" type="button" role="switch" aria-checked="${lbS.srv==='echt'}"><span><b>Echter Server</b><small>${lbS.srv==='echt'?'Spricht mit '+LB_URL.replace('https://','')+'. Testrunden sind dort nur für dich sichtbar.':'Aus: eingebauter Schein-Server mit Beispielspielern'}</small></span><i aria-hidden="true"></i></button>`
+      +(lbS.srv==='echt'?'':`<button class="opt" id="tOff" type="button" role="switch" aria-checked="${!!lbS.mockOff}"><span><b>Schein-Server offline</b><small>Wie Flugmodus: nichts wird übertragen</small></span><i aria-hidden="true"></i></button>`
+      +`<button class="opt" id="tSlow" type="button" role="switch" aria-checked="${!!lbS.mockSlow}"><span><b>Schein-Server langsam</b><small>Antwortet erst nach 8 Sekunden (Zeitgrenze 6 s)</small></span><i aria-hidden="true"></i></button>`
+      +`<button class="opt" id="tReset" type="button"><span><b>Schein-Server zurücksetzen</b><small>Löscht alle Testkonten und Testergebnisse</small></span></button>`)
+      +`</div>`;
+  }
+  B.innerHTML=h;
+  B.querySelectorAll('[data-am]').forEach(b=>b.addEventListener('click',()=>{ if(acctBusy) return; acctMode=b.dataset.am; acctErr=''; SFX.ui(); acctRender(); }));
+  B.querySelectorAll('input').forEach(i=>i.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); acctSubmit(); } }));
+  const on=(id,f)=>{ const e=B.querySelector('#'+id); if(e) e.addEventListener('click',f); };
+  on('aOk',e=>{ const b=e.currentTarget; b.setAttribute('aria-checked',String(b.getAttribute('aria-checked')!=='true')); SFX.ui(); });
+  on('aCopy',()=>{ const t=$('aCopyTxt'); const ok=()=>{ t.textContent='Kopiert'; };
+    try{ navigator.clipboard.writeText(acctCode).then(ok,()=>{ acctSelect(); t.textContent='Markiert: lange drücken zum Kopieren'; }); }catch(e){ acctSelect(); t.textContent='Markiert: lange drücken zum Kopieren'; } });
+  on('aToLb',()=>{ const f=acctFrom; acctClose(); if(f.state==='menu'||f.state==='over') lbOpen(); });
+  on('aSync',()=>{ lbFlush(true); SFX.ui(); });
+  on('aRen',()=>{ acctMode='rename'; acctErr=''; acctInfo=''; SFX.ui(); acctRender(); });
+  on('aDel',()=>{ acctMode='delete'; acctErr=''; acctInfo=''; SFX.ui(); acctRender(); });
+  on('aData',()=>{ acctMode='data'; acctErr=''; acctData=''; acctInfo=''; SFX.ui(); acctRender(); acctLoadData(); });
+  on('tSrv',()=>{ lbS.srv=lbS.srv==='echt'?'schein':'echt'; lbLocalLogout(); lbS.cache={}; lbSave(); lbNet='?'; acctMode='login'; acctErr=''; SFX.ui(); acctRender(); });
+  on('tOff',()=>{ lbS.mockOff=!lbS.mockOff; lbSave(); SFX.ui(); acctRender(); if(!lbS.mockOff) lbFlush(true); });
+  on('tSlow',()=>{ lbS.mockSlow=!lbS.mockSlow; lbSave(); SFX.ui(); acctRender(); });
+  on('tReset',()=>{ mockReset(); lbLocalLogout(); lbS.cache={}; lbSave(); acctMode='login'; acctErr=''; acctInfo='Schein-Server zurückgesetzt.'; SFX.ui(); acctRender(); });
+  const f=B.querySelector('#aName')||B.querySelector('#aPw'); if(f&&acctMode!=='main'&&!acctBusy&&!(window.matchMedia&&matchMedia('(pointer:coarse)').matches)) setTimeout(()=>{ try{ f.focus(); }catch(e){} },50);
+}
+function acctSelect(){ const el=$('aCodeOut'); if(!el) return; try{ const r=document.createRange(); r.selectNodeContents(el); const s=getSelection(); s.removeAllRanges(); s.addRange(r); }catch(e){} }
+async function acctLoadData(){
+  try{
+    const x=await lbCall('GET','/v1/konto/daten');
+    if(x.status===200) acctData=JSON.stringify(x.j,null,2);
+    else if(x.status===401){ lbAuthLost(x.j.fehler); acctMode='login'; }
+    else acctData=x.j.fehler||'Fehler '+x.status;
+  }catch(e){ acctData='Keine Verbindung zum Server. Deine Daten kannst du nur online ansehen.'; }
+  if(state==='acct'&&(acctMode==='data'||acctMode==='login')) acctRender();
+}
+const acctVal=id=>{ const e=$(id); return e?e.value:''; };
+async function acctSubmit(){
+  if(acctBusy) return;
+  const m=acctMode;
+  if(m==='showcode'){ acctCode=''; acctMode='main'; acctInfo='Angemeldet. Deine Ergebnisse kommen ab jetzt in die Bestenliste.'; SFX.ui(); acctRender(); return; }
+  if(m==='main'){
+    // Abmelden: noch nicht übertragene Ergebnisse gehen dabei verloren, darum vorher fragen
+    if(lbS.queue.length&&!acctConfirmLogout){ acctConfirmLogout=true; acctErr=`${lbS.queue.length===1?'1 Ergebnis ist':lbS.queue.length+' Ergebnisse sind'} noch nicht übertragen und ginge verloren. Nochmal tippen zum Abmelden.`; acctRender(); return; }
+    acctConfirmLogout=false;
+    // Erst lokal abmelden (geht immer), dann dem Server Bescheid geben, falls er erreichbar ist
+    const tok=lbS.token; lbLocalLogout(); if(tok) lbCallTok('POST','/v1/abmelden',tok);
+    acctMode='login'; acctErr=''; acctInfo=''; SFX.ui(); acctRender(); lbOptTxt(); return;
+  }
+  const name=acctVal('aName').trim(), pw=acctVal('aPw');
+  let req=null;
+  if(m==='login'){ if(!name||!pw){ acctErr='Bitte Name und Passwort eingeben.'; return acctRender(); } req=['POST','/v1/anmelden',{name,passwort:pw,geraet:'Handy'},false]; }
+  else if(m==='reg'){
+    if(!/^[A-Za-zÄÖÜäöüß0-9_-]{3,16}$/.test(name)){ acctErr='Name: 3 bis 16 Zeichen, nur Buchstaben, Ziffern, _ und -.'; return acctRender(); }
+    if(pw.length<8){ acctErr='Passwort: mindestens 8 Zeichen.'; return acctRender(); }
+    if($('aOk').getAttribute('aria-checked')!=='true'){ acctErr='Bitte bestätige, dass Name und Punkte öffentlich sichtbar sind.'; return acctRender(); }
+    req=['POST','/v1/konto',{name,passwort:pw,zustimmung:true,geraet:'Handy'},false];
+  }
+  else if(m==='code'){ const code=acctVal('aCode'); if(!name||!code||pw.length<8){ acctErr='Bitte Name, Code und ein neues Passwort (mindestens 8 Zeichen) eingeben.'; return acctRender(); } req=['POST','/v1/wiederherstellen',{name,code,passwort:pw,geraet:'Handy'},false]; }
+  else if(m==='rename'){ if(!name){ acctErr='Bitte einen Namen eingeben.'; return acctRender(); } req=['PATCH','/v1/konto',{name},true]; }
+  else if(m==='delete'){ if(!pw){ acctErr='Bitte dein Passwort eingeben.'; return acctRender(); } req=['DELETE','/v1/konto',{passwort:pw},true]; }
+  if(!req) return;
+  acctBusy=true; acctErr=''; const keep={name:acctVal('aName'),code:acctVal('aCode'),pw:acctVal('aPw'),ok:!!($('aOk')&&$('aOk').getAttribute('aria-checked')==='true')};
+  const restore=()=>{ if($('aName')&&m!=='rename') $('aName').value=keep.name; if($('aCode')) $('aCode').value=keep.code; if($('aPw')&&acctMode===m) $('aPw').value=keep.pw; if($('aOk')&&keep.ok) $('aOk').setAttribute('aria-checked','true'); };
+  acctRender(); restore();
+  let x=null;
+  try{ x=await lbCall(...req); }catch(e){ x=null; }
+  acctBusy=false;
+  if(!x){ acctErr='Keine Verbindung zum Server. Das geht nur online, spielen kannst du trotzdem.'; lbNet='off'; }
+  else if((x.status===200||x.status===201)&&(m==='login'||m==='reg'||m==='code')){
+    lbLoggedIn(x.j);
+    if(x.j.code){ acctCode=x.j.code; acctMode='showcode'; } else { acctMode='main'; acctInfo='Angemeldet.'; }
+    SFX.buy&&SFX.buy();
+  }
+  else if(x.status===200&&m==='rename'){ lbS.name=x.j.name; lbS.qOwner=lbNorm(x.j.name); lbS.cache={}; lbSave(); acctMode='main'; acctInfo='Name geändert.'; }
+  else if(x.status===200&&m==='delete'){ lbLocalLogout(); lbS.cache={}; lbSave(); acctMode='login'; acctInfo=''; acctErr=''; lbS.authMsg='Dein Konto wurde gelöscht.'; }
+  else if(x.status===401&&(m==='rename'||m==='delete')&&!/Passwort/.test(x.j.fehler||'')){ lbAuthLost(x.j.fehler); acctMode='login'; }
+  else acctErr=(x.j&&x.j.fehler)||'Fehler '+x.status;
+  if(state==='acct'){ acctRender(); if(acctErr&&acctMode===m) restore(); }
+  lbOptTxt();
+}
+let acctConfirmLogout=false;
+function lbCallTok(method,path,tok){ const s=lbS.token; lbS.token=tok; const p=lbCall(method,path,null,true).catch(()=>{}); lbS.token=s; return p; }
+$('acctGo').addEventListener('click',acctSubmit);
+$('acctBack').addEventListener('click',()=>{
+  if(acctBusy) return;
+  acctConfirmLogout=false;
+  if(acctMode==='rename'||acctMode==='delete'||acctMode==='data'){ acctMode='main'; acctErr=''; SFX.ui(); acctRender(); return; }
+  if(acctMode==='showcode'){ acctCode=''; acctMode='main'; }
+  acctClose();
+});
+$('optAcct').addEventListener('click',()=>acctOpen());
+
+// ---- Schein-Server (nur Testversion): gleiche Schnittstelle wie der echte Server, Daten im Browser ----
+const MOCK_KEY='orbitsprung.mock';
+const MOCK_BOTS=['Nebelfalke','Komet42','Sternstaub7','Orbitfuchs','Lunatic','Quasarine','Raketen_Rudi','Polarlicht','Gravitas','Saturnella','Kosmo','Nova_Nina','Pulsar99','Meteora','Andromedar','Zwergstern','Sonnenwind','Taumler','Perihel','Apogee','Mira_B','Kuiper','Ekliptik','Kometin'];
+const MOCK_BASE={klassik:9000,sprint:4500,chaos:12000,feld:14000,hyper:18000,daily:7000};
+let mockDb=null;
+function mockLoad(){ if(mockDb) return; try{ mockDb=JSON.parse(localStorage.getItem(MOCK_KEY)||'null'); }catch(e){} if(!mockDb||mockDb.v!==1) mockDb={v:1,konten:[],sitz:{},tickets:{},runden:{},best:{},nid:1}; }
+function mockSave(){ try{ localStorage.setItem(MOCK_KEY,JSON.stringify(mockDb)); }catch(e){} }
+function mockReset(){ mockDb=null; try{ localStorage.removeItem(MOCK_KEY); }catch(e){} }
+const mockHash=s=>seedOf('salz:'+s).toString(36)+seedOf(s+':salz').toString(36);
+function mockCode(){ const Z='ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let c=''; for(let i=0;i<16;i++){ c+=Z[Math.floor(Math.random()*Z.length)]; if(i%4===3&&i<15) c+='-'; } return c; }
+const mockCodeN=c=>String(c||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+// Beispielspieler: feste Werte je Liste (aus dem Namen und dem Zeitraum berechnet), manche spielen nicht jeden Zeitraum
+function mockBots(modus,z){
+  const out=[];
+  for(const n of MOCK_BOTS){
+    const r=mulberry(seedOf(n+'|'+modus+'|all')), skill=.25+r()*r()*1.6, all=Math.round(MOCK_BASE[modus]*skill*(.6+r()*.8));
+    if(z==='all'){ if(r()<.85) out.push({name:n,punkte:all,planeten:Math.round(all/(260+r()*120)),offline:r()<.08,t:r()}); continue; }
+    const q=mulberry(seedOf(n+'|'+modus+'|'+z)); if(q()<.45) continue;
+    const v=Math.round((modus==='daily'?MOCK_BASE.daily*skill*(.5+q()*.9):all*(.35+q()*.6)));
+    out.push({name:n,punkte:v,planeten:Math.round(v/(260+q()*120)),offline:q()<.08,t:q()});
+  }
+  return out;
+}
+function mockZr(e){ if(e.modus==='daily') return ['d'+e.tag]; const z=['all']; if(lbDayNr(e.tag)>=lbDayNr(lbUtcToday())-14) z.push('w'+lbWeek(e.tag)); return z; }
+const lbDayNr=t=>Math.floor(Date.parse(t+'T00:00:00Z')/864e5);
+const lbUtcToday=()=>new Date().toISOString().slice(0,10);
+function mockCheck(e,ticket){
+  if(!e||typeof e.rid!=='string'||!/^[A-Za-z0-9_-]{8,64}$/.test(e.rid)) return 'Ungültige Runden-ID.';
+  if(!LB_MODES.includes(e.modus)) return 'Unbekannter Modus.';
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(e.tag||'')) return 'Ungültiges Datum.';
+  for(const k of ['punkte','planeten','dauer']) if(!Number.isInteger(e[k])||e[k]<0) return 'Ungültiger Wert: '+k+'.';
+  if(e.punkte<1) return 'Keine Punkte.';
+  const s=e.dauer/1000;
+  if(e.modus==='sprint'&&s>75) return 'Sprint dauert höchstens 60 Sekunden.';
+  if(e.planeten>4*s+10) return 'Zu viele Planeten für diese Zeit.';
+  if(e.punkte>5000+2500*s) return 'Zu viele Punkte für diese Zeit.';
+  const t=lbDayNr(e.tag), h=lbDayNr(lbUtcToday());
+  if(t>h+1) return 'Datum liegt in der Zukunft.';
+  if(e.modus==='daily'&&t<h-2) return 'Tagesflug ist zu alt (höchstens 2 Tage nachreichen).';
+  if(ticket){ if(ticket.modus!==e.modus) return 'Ticket passt nicht zum Modus.'; if(e.dauer>Date.now()-ticket.at+120e3) return 'Runde dauerte länger als seit dem Start vergangen ist.'; }
+  return null;
+}
+function mockPlace(kid,modus,z){
+  const D=mockDb, mine=D.best[kid+'|'+modus+'|'+z]; if(!mine) return null;
+  const rows=mockList(modus,z,1e9); const i=rows.findIndex(r=>r.kid===kid);
+  return {platz:i+1,von:rows.length,punkte:mine.punkte,planeten:mine.planeten,offline:!!mine.offline,test:false};
+}
+function mockList(modus,z){
+  const D=mockDb, rows=mockBots(modus,z).map(b=>({kid:-1,name:b.name,punkte:b.punkte,planeten:b.planeten,offline:b.offline,at:b.t}));
+  for(const k in D.best){ const [kid,m,zz]=k.split('|'); if(m!==modus||zz!==z) continue; const ko=D.konten.find(x=>x.id===+kid); if(!ko) continue; const b=D.best[k]; rows.push({kid:+kid,name:ko.name,punkte:b.punkte,planeten:b.planeten,offline:!!b.offline,at:b.at}); }
+  rows.sort((a,b)=>b.punkte-a.punkte||a.at-b.at);
+  return rows;
+}
+function mockRoute(method,path,body,tok){
+  mockLoad(); const D=mockDb, now=Date.now();
+  const R=(status,j)=>({status,j});
+  const url=new URL(path,'http://x'), p=url.pathname;
+  const auth=()=>{ const id=tok&&D.sitz[tok]; const k=id&&D.konten.find(x=>x.id===id); return k||null; };
+  const nameOk=n=>typeof n==='string'&&/^[A-Za-zÄÖÜäöüß0-9_-]{3,16}$/.test(n)&&!/admin|orbitsprung/i.test(n);
+  const taken=(n,self)=>D.konten.some(k=>lbNorm(k.name)===lbNorm(n)&&k.id!==self)||MOCK_BOTS.some(b=>lbNorm(b)===lbNorm(n));
+  const newTok=id=>{ const t='m'+lbRid()+lbRid(); D.sitz[t]=id; return t; };
+  if(method==='GET'&&p==='/v1/status') return R(200,{ok:true,server:'schein',zeit:now});
+  if(method==='POST'&&p==='/v1/konto'){
+    if(body.zustimmung!==true) return R(400,{fehler:'Bitte bestätige, dass Name und Punkte öffentlich sichtbar sind.'});
+    if(!nameOk(body.name)) return R(400,{fehler:'Name: 3 bis 16 Zeichen, nur Buchstaben, Ziffern, _ und -.'});
+    if(String(body.passwort||'').length<8) return R(400,{fehler:'Passwort: mindestens 8 Zeichen.'});
+    if(taken(body.name)) return R(409,{fehler:'Dieser Name ist schon vergeben.'});
+    const code=mockCode(), k={id:D.nid++,name:body.name,pw:mockHash(body.passwort),code:mockHash(mockCodeN(code)),erstellt:now,nameAt:0};
+    D.konten.push(k); const token=newTok(k.id); mockSave(); return R(201,{token,name:k.name,code});
+  }
+  if(method==='POST'&&p==='/v1/anmelden'){
+    const k=D.konten.find(x=>lbNorm(x.name)===lbNorm(body.name));
+    if(!k||k.pw!==mockHash(String(body.passwort||''))) return R(401,{fehler:'Name oder Passwort stimmt nicht.'});
+    const token=newTok(k.id); mockSave(); return R(200,{token,name:k.name});
+  }
+  if(method==='POST'&&p==='/v1/wiederherstellen'){
+    const k=D.konten.find(x=>lbNorm(x.name)===lbNorm(body.name));
+    if(String(body.passwort||'').length<8) return R(400,{fehler:'Passwort: mindestens 8 Zeichen.'});
+    if(!k||k.code!==mockHash(mockCodeN(body.code))) return R(401,{fehler:'Name oder Wiederherstellungscode stimmt nicht.'});
+    const code=mockCode(); k.pw=mockHash(body.passwort); k.code=mockHash(mockCodeN(code));
+    for(const t in D.sitz) if(D.sitz[t]===k.id) delete D.sitz[t];
+    const token=newTok(k.id); mockSave(); return R(200,{token,name:k.name,code});
+  }
+  if(method==='GET'&&p==='/v1/liste'){
+    const modus=url.searchParams.get('modus'), zr=url.searchParams.get('zeitraum'), tag=url.searchParams.get('tag')||lbUtcToday();
+    if(!LB_MODES.includes(modus)) return R(400,{fehler:'Unbekannter Modus.'});
+    const z=modus==='daily'?'d'+tag:zr==='woche'?'w'+lbWeek(tag):'all', k=auth();
+    const rows=mockList(modus,z), n=Math.min(100,+url.searchParams.get('anzahl')||50);
+    const eintraege=rows.slice(0,n).map((r,i)=>({platz:i+1,name:r.name,punkte:r.punkte,planeten:r.planeten,offline:r.offline,ich:!!(k&&r.kid===k.id)}));
+    const ich=k?mockPlace(k.id,modus,z):null;
+    return R(200,{modus,zeitraum:modus==='daily'?'tag':z==='all'?'all':'woche',schluessel:z,eintraege,gesamt:rows.length,ich:ich?Object.assign({name:k.name},ich):null,stand:now});
+  }
+  const k=auth();
+  if(!k) return R(401,{fehler:'Anmeldung abgelaufen. Bitte neu anmelden.'});
+  if(method==='POST'&&p==='/v1/abmelden'){ delete D.sitz[tok]; mockSave(); return R(200,{ok:true}); }
+  if(method==='GET'&&p==='/v1/konto') return R(200,{name:k.name,erstellt:k.erstellt});
+  if(method==='PATCH'&&p==='/v1/konto'){
+    if(!nameOk(body.name)) return R(400,{fehler:'Name: 3 bis 16 Zeichen, nur Buchstaben, Ziffern, _ und -.'});
+    if(lbNorm(body.name)!==lbNorm(k.name)){
+      if(k.nameAt&&now-k.nameAt<7*864e5) return R(429,{fehler:'Den Namen kannst du nur einmal pro Woche ändern.'});
+      if(taken(body.name,k.id)) return R(409,{fehler:'Dieser Name ist schon vergeben.'});
+      k.nameAt=now;
+    }
+    k.name=body.name; mockSave(); return R(200,{name:k.name});
+  }
+  if(method==='DELETE'&&p==='/v1/konto'){
+    if(k.pw!==mockHash(String(body.passwort||''))) return R(401,{fehler:'Passwort stimmt nicht.'});
+    D.konten=D.konten.filter(x=>x.id!==k.id);
+    for(const t in D.sitz) if(D.sitz[t]===k.id) delete D.sitz[t];
+    for(const b in D.best) if(b.startsWith(k.id+'|')) delete D.best[b];
+    for(const r in D.runden) if(D.runden[r].kid===k.id) delete D.runden[r];
+    mockSave(); return R(200,{ok:true});
+  }
+  if(method==='GET'&&p==='/v1/konto/daten'){
+    return R(200,{konto:{name:k.name,erstellt:new Date(k.erstellt).toISOString()},runden:Object.values(D.runden).filter(r=>r.kid===k.id).map(r=>({rid:r.rid,modus:r.modus,tag:r.tag,punkte:r.punkte,planeten:r.planeten,dauer:r.dauer,offline:r.offline,version:r.version,erstellt:new Date(r.at).toISOString()}))});
+  }
+  if(method==='POST'&&p==='/v1/runde'){
+    if(!LB_MODES.includes(body.modus)) return R(400,{fehler:'Unbekannter Modus.'});
+    const id='t'+lbRid(); D.tickets[id]={kid:k.id,modus:body.modus,at:now,used:false}; mockSave(); return R(200,{ticket:id});
+  }
+  if(method==='POST'&&p==='/v1/ergebnisse'){
+    const L=body.ergebnisse; if(!Array.isArray(L)||!L.length||L.length>20) return R(400,{fehler:'Ergebnisse fehlen (höchstens 20 auf einmal).'});
+    const out=[];
+    for(const e of L){
+      const da=e&&D.runden[e.rid];
+      if(da){ out.push(da.kid===k.id?{rid:e.rid,ok:true,doppelt:true}:{rid:e.rid,ok:false,grund:'Runden-ID schon vergeben.'}); continue; }
+      let t=null;
+      if(e&&e.ticket!=null){
+        t=D.tickets[e.ticket]; if(!t||t.kid!==k.id){ out.push({rid:e.rid,ok:false,grund:'Ungültiges Ticket.'}); continue; }
+        if(t.used){ const v=Object.values(D.runden).filter(r=>r.ticket===e.ticket).sort((a,b)=>b.at-a.at)[0]; if(!(v&&e.punkte>=v.punkte&&e.dauer>=v.dauer)){ out.push({rid:e.rid,ok:false,grund:'Ticket wurde schon benutzt.'}); continue; } }
+      }
+      const err=mockCheck(e,t); if(err){ out.push({rid:e.rid,ok:false,grund:err}); continue; }
+      if(t) t.used=true;
+      D.runden[e.rid]={rid:e.rid,kid:k.id,modus:e.modus,tag:e.tag,punkte:e.punkte,planeten:e.planeten,dauer:e.dauer,ticket:t?e.ticket:null,offline:!t,version:e.version,at:now};
+      const pl={};
+      for(const z of mockZr(e)){ const key=k.id+'|'+e.modus+'|'+z, b=D.best[key]; if(!b||e.punkte>b.punkte) D.best[key]={punkte:e.punkte,planeten:e.planeten,offline:!t,at:now}; }
+      for(const z of mockZr(e)){ const q=mockPlace(k.id,e.modus,z); if(q) pl[z==='all'?'all':z[0]==='w'?'woche':'tag']={platz:q.platz,von:q.von,punkte:q.punkte,rekord:q.punkte===e.punkte}; }
+      out.push({rid:e.rid,ok:true,plaetze:pl});
+    }
+    mockSave(); return R(200,{ergebnisse:out});
+  }
+  return R(404,{fehler:'Nicht gefunden.'});
+}
+function mockCall(method,path,body,tok){
+  const d=lbS.mockSlow?8000:220+Math.random()*250;
+  return new Promise((ok,no)=>{
+    // Wie beim echten Server: Nach der Zeitgrenze gibt das Spiel auf und versucht es später
+    const lim=Math.min(d,LB_TIMEOUT);
+    setTimeout(()=>{
+      if(lbS.mockOff||d>LB_TIMEOUT){ no({net:true}); return; }
+      try{ ok(mockRoute(method,path,body?JSON.parse(JSON.stringify(body)):{},tok)); }catch(e){ no({net:true}); }
+    },lim);
+  });
+}
 
 // ---------- Einführung beim ersten Start ----------
 let tut=null;
