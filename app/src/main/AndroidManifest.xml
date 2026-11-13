@@ -3,6 +3,12 @@
 
     <!-- Für die Schriftarten von Google Fonts und die Update-Prüfung beim Start; das Spiel läuft auch komplett offline -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Selbst-Update: neues APK vom GitHub-Release installieren. Android fragt den Nutzer einmalig
+         („Unbekannte Apps installieren“) und bestätigt jede Installation im eigenen Fenster -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Nur zum Scannen von Freundes-QR-Codes; wird erst beim Antippen von „QR-Code scannen“ erfragt -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <application
         android:allowBackup="true"
@@ -22,5 +28,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Rückmeldung des Paketinstallers beim Selbst-Update, nur für das System erreichbar -->
+        <receiver android:name=".AppUpdater$Status" android:exported="false" />
     </application>
 </manifest>

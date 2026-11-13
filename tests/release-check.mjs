@@ -25,7 +25,8 @@ const menuVer = ((code.match(/<div class="ver" id="ver">([^<]*)<\/div>/) || [])[
 if (!appVer) fail("`const APP_VERSION='x.y.z';` fehlt.");
 else if (!/^\d+(\.\d+)+$/.test(appVer)) fail(`APP_VERSION „${appVer}“ ist keine Versionsnummer wie 1.5.1.`);
 else if (!menuVer || menuVer[0] !== appVer) fail(`Menütext #ver (${menuVer ? menuVer[0] : 'ohne Nummer'}) passt nicht zu APP_VERSION ${appVer}.`);
-if ((code.match(/<script>/g) || []).length !== (code.match(/<\/script>/g) || []).length) fail('<script>-Tags sind nicht ausgeglichen.');
+// Auch <script type="text/plain"> (eingebettete Bibliotheken für den QR-Code) zählen mit
+if ((code.match(/<script\b[^>]*>/g) || []).length !== (code.match(/<\/script>/g) || []).length) fail('<script>-Tags sind nicht ausgeglichen.');
 
 if (errors.length) {
   for (const e of errors) console.error('::error file=' + file + '::' + e);

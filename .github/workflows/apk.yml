@@ -43,6 +43,8 @@ jobs:
         run: node tests/sync.mjs
       - name: Update-Hinweis-Test (neue Version, Ignorieren, nicht mehr anzeigen, ohne Netz)
         run: node tests/update.mjs
+      - name: Selbst-Update-Test (Jetzt aktualisieren, Erlaubnis, Laden, Fehler, Abbruch)
+        run: node tests/selbstupdate.mjs
 
   build:
     needs: pruefen

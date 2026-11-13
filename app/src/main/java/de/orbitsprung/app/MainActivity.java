@@ -1,8 +1,10 @@
 package de.orbitsprung.app;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -13,6 +15,8 @@ import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.PermissionRequest;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebViewClient;
 
@@ -20,6 +24,10 @@ import android.webkit.WebViewClient;
 public class MainActivity extends Activity {
 
     private WebView web;
+    private AppUpdater updater;
+    private static final int KAMERA_ANFRAGE = 7;
+    /** Wartende Kamera-Anfrage der Webseite, bis der Nutzer die Android-Erlaubnis beantwortet hat. */
+    private PermissionRequest kameraWartet;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -57,6 +65,31 @@ public class MainActivity extends Activity {
                 return false;
             }
         });
+        // Selbst-Update: das Spiel ruft window.OrbitUpdate auf, wenn GitHub eine neuere Version meldet
+        updater = new AppUpdater(this, web);
+        web.addJavascriptInterface(updater, "OrbitUpdate");
+        // Kamera für „QR-Code scannen“ (Freunde): nur Video, und nur wenn Android die Erlaubnis gibt
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onPermissionRequest(final PermissionRequest req) {
+                runOnUiThread(() -> {
+                    boolean video = false;
+                    for (String r : req.getResources()) if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(r)) video = true;
+                    if (!video) { req.deny(); return; }
+                    if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                        req.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+                    } else {
+                        if (kameraWartet != null) kameraWartet.deny();
+                        kameraWartet = req;
+                        requestPermissions(new String[]{Manifest.permission.CAMERA}, KAMERA_ANFRAGE);
+                    }
+                });
+            }
+            @Override
+            public void onPermissionRequestCanceled(PermissionRequest req) {
+                if (req == kameraWartet) kameraWartet = null;
+            }
+        });
         setContentView(web);
         hideSystemBars();
 
@@ -87,8 +120,18 @@ public class MainActivity extends Activity {
         if (hasFocus) hideSystemBars();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int code, String[] perms, int[] res) {
+        super.onRequestPermissionsResult(code, perms, res);
+        if (code != KAMERA_ANFRAGE || kameraWartet == null) return;
+        if (res.length > 0 && res[0] == PackageManager.PERMISSION_GRANTED)
+            kameraWartet.grant(new String[]{PermissionRequest.RESOURCE_VIDEO_CAPTURE});
+        else kameraWartet.deny();
+        kameraWartet = null;
+    }
+
     @Override protected void onPause()  { super.onPause();  if (web != null) web.onPause(); }
-    @Override protected void onResume() { super.onResume(); if (web != null) web.onResume(); }
+    @Override protected void onResume() { super.onResume(); if (web != null) web.onResume(); if (updater != null) updater.beiRueckkehr(); }
 
     @Override
     protected void onSaveInstanceState(Bundle out) {
@@ -98,6 +141,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (updater != null) { updater.beenden(); updater = null; }
         if (web != null) { web.destroy(); web = null; }
         super.onDestroy();
     }

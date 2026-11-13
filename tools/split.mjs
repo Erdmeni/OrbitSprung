@@ -14,7 +14,7 @@ export function splitHtml(html) {
   const sEnd = html.indexOf('</style>', sStart);
   const jOpen = html.lastIndexOf('<script>');
   const jStart = html.indexOf('\n', jOpen) + 1;
-  const jEnd = html.lastIndexOf('</script>');
+  const jEnd = html.indexOf('</script>', jOpen); // danach können noch <script type="text/plain"> mit Bibliotheken kommen
   if (styleOpen < 0 || sEnd < 0 || jOpen < sEnd || jEnd < jStart) throw new Error('Aufbau nicht erkannt (<style> / <script> fehlen)');
   cut('00-kopf.html', 0, sStart);
   cut('10-stil.css', sStart, sEnd);

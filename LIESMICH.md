@@ -22,6 +22,23 @@
 Jeder Push auf `main` baut automatisch die APK. Die Versionsnummer steht im Spiel (`const APP_VERSION='1.5.1';` und Menütext `#ver`, beide gleich). Daraus entstehen Release-Tag `v1.5.1` und der Versionsname der App. Gibt es das Release schon, wird nur gebaut, aber kein neues Release angelegt. Für ein neues Release also die Version erhöhen.
 
 Beim Start fragt das Spiel bei GitHub nach dem neuesten Release. Ist es neuer, erscheint ein Hinweis mit „Ignorieren“ und dem Haken „Diese Nachricht nicht mehr anzeigen“ (gilt nur für genau diese Version). Ohne Netz läuft das Spiel normal weiter.
+
+### Selbst-Update in der App
+
+In der Android-App steht im Hinweis „Jetzt aktualisieren“. Die App lädt dann `Orbitsprung.apk` aus dem Release (nur von `github.com/Erdmeni/OrbitSprung/releases/download/…`), prüft Paket, Version und Signatur und übergibt es dem Android-Installer (`AppUpdater.java`).
+
+- Beim ersten Mal fragt Android, ob Orbitsprung Apps installieren darf („Aus dieser Quelle zulassen“, Berechtigung `REQUEST_INSTALL_PACKAGES`). Die App führt direkt dorthin und macht nach der Rückkehr von selbst weiter.
+- Jede Installation bestätigt der Nutzer im Android-Fenster („Aktualisieren“). Ab Android 12 kann das entfallen, wenn Orbitsprung die vorige Version selbst installiert hat.
+- Android schließt die App beim Ersetzen, Spielstand und Einstellungen bleiben erhalten.
+- Obtainium funktioniert weiter, beide Wege installieren dieselbe APK.
+- In den Einstellungen sucht „Nach Updates suchen“ jederzeit von Hand, auch wenn der Hinweis mit dem Haken ausgeblendet wurde.
+
+Voraussetzung: Jedes Release enthält `Orbitsprung.apk` und ist mit demselben Schlüssel signiert, sonst lehnt Android das Update ab.
+
+### Kamera für Freundes-QR-Codes
+
+Die App hat die Berechtigung `CAMERA`, nur für „QR-Code scannen“ bei den Freunden. Android fragt erst beim ersten Scannen. `MainActivity` gibt der WebView die Kamera nur für Video frei und nur, wenn die Erlaubnis erteilt ist.
+
 Das Spiel selbst liegt in `app/src/main/assets/index.html`.
 
 ## Wichtig
@@ -37,6 +54,7 @@ Die GitHub Action baut die APK nur, wenn vorher alle Prüfungen grün sind (Job 
 - `tests/module.mjs`: Aufteilen in Module und Zusammensetzen ergibt dieselbe Datei.
 - `tests/smoke.mjs`: öffnet das Spiel im Browser, startet jeden Modus, tippt, beendet die Runde, klickt Shop, Erfolge und Einstellungen durch und schlägt bei JS-Fehlern fehl.
 - `tests/update.mjs`: Update-Hinweis beim Start mit simulierter GitHub-Antwort: neuere, gleiche und ältere Version, Ignorieren, „nicht mehr anzeigen“ nur für genau diese Version, ohne Netz.
+- `tests/selbstupdate.mjs`: Selbst-Update mit nachgebildeter App-Schnittstelle: Erlaubnis, Laden mit Fortschritt, Android-Bestätigung, Fehler, Abbruch, nur eigene APKs, „Nach Updates suchen“ in den Einstellungen.
 - `tests/sync.mjs`: zwei simulierte Geräte mit einem Konto: Spielstand-Migration, Offline-Käufe auf beiden Geräten, alte App-Version, Erfolge nur einmal belohnt.
 
 Lokal: `npm install` und dann `npm test` (optional mit Pfad: `node tests/smoke.mjs datei.html`).
