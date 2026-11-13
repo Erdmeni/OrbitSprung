@@ -10,7 +10,8 @@ const file = resolve(process.argv[2] || 'app/src/main/assets/index.html');
 const url = pathToFileURL(file).href;
 const APP = (readFileSync(file, 'utf8').match(/const\s+APP_VERSION\s*=\s*'([^']*)'/) || [])[1];
 if (!APP) { console.error('APP_VERSION fehlt'); process.exit(1); }
-const bump = (v, i) => v.split('.').map(Number).map((x, k) => k === i ? x + 1 : k > i ? 0 : x).join('.');
+// Zweistellige Versionen (z. B. 1.6) auf drei Stellen auffüllen, sonst wäre die „nächste“ Version 1.6 selbst
+const bump = (v, i) => { const p = v.split('.').map(Number); while (p.length < 3) p.push(0); return p.map((x, k) => k === i ? x + 1 : k > i ? 0 : x).join('.'); };
 const NEXT = bump(APP, 2), NEXT2 = bump(APP, 1);
 const problems = [];
 const step = msg => console.log('  · ' + msg);
