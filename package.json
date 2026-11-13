@@ -4,7 +4,7 @@
   "description": "Prüfungen und Hilfsskripte für Orbitsprung. Das Spiel selbst ist app/src/main/assets/index.html.",
   "type": "module",
   "scripts": {
-    "test": "node tests/release-check.mjs && node tests/module.mjs && node tests/smoke.mjs && node tests/sync.mjs && node tests/update.mjs",
+    "test": "node tests/release-check.mjs && node tests/module.mjs && node tests/smoke.mjs && node tests/sync.mjs && node tests/update.mjs && node tests/selbstupdate.mjs",
     "split": "node tools/split.mjs",
     "build": "node tools/build.mjs",
     "release": "node tools/release.mjs"

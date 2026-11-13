@@ -11,6 +11,7 @@ const file = resolve(process.argv[2] || 'app/src/main/assets/index.html');
 const html = readFileSync(file, 'utf8');
 if (!/window\.claude/.test(html) || !/SAVE_V/.test(html)) { console.log('Sync-Test übersprungen: Datei hat keinen Konto-Sync mit Spielstand-Version.'); process.exit(0); }
 const testBuild = /const\s+TEST_BUILD\s*=\s*true/.test(html);
+const SAVE_V = +((html.match(/const\s+SAVE_V\s*=\s*(\d+)/) || [])[1] || 2);
 
 const problems = [];
 const check = (ok, msg) => { console.log(`  ${ok ? '✓' : '✗'} ${msg}`); if (!ok) problems.push(msg); };
@@ -65,11 +66,11 @@ try {
   console.log('1) Alter Spielstand (ohne Version) wird migriert');
   const A = await device(browser, 'A', { staub: 500, best: 42, bests: { klassik: 42 }, ownC: ['glut'], ownT: ['pastell'] });
   let sa = await saveOf(A);
-  check(sa.v === 2, `Spielstand-Version 2 (ist ${sa.v})`);
+  check(sa.v === SAVE_V, `Spielstand-Version ${SAVE_V} (ist ${sa.v})`);
   if (!testBuild) check(sa.dust && sa.dust.b === 500 && Object.keys(sa.dust.e).length === 0, 'Bisheriger Staub (500) liegt im Sockel der Buchführung');
   else check(sa.dust && sa.dust.b === 99999 && Object.keys(sa.dust.e).length === 0, 'Testversion füllt über den Sockel auf 99.999 auf');
   if (!testBuild) check(await staub(A) === 500, 'Anzeige zeigt 500 ✦');
-  check(cloud && cloud.v === 2 && cloud.dust, 'Gerät A hat den neuen Stand in die Cloud geschrieben');
+  check(cloud && cloud.v === SAVE_V && cloud.dust, 'Gerät A hat den neuen Stand in die Cloud geschrieben');
 
   console.log('2) Zweites Gerät übernimmt den Stand');
   const B = await device(browser, 'B', null);
@@ -99,7 +100,7 @@ try {
     await push(A, legacy);
     check(await staub(A) === 1234, `Gerät A übernimmt den neueren alten Stand: ${await staub(A)}`);
     const sa2 = await saveOf(A);
-    check(sa2.dust && sa2.v === 2, 'Buchführung bleibt erhalten');
+    check(sa2.dust && sa2.v === SAVE_V, 'Buchführung bleibt erhalten');
     await settle(A);
     await push(B, cloud);
     check(await staub(B) === 1234 || !cloud.dust, `Gerät B nach erneutem Abgleich: ${await staub(B)}`);
@@ -119,6 +120,14 @@ try {
     const legacy2 = { staub: 300, st: { planets: 1, runs: 1 }, bests: { klassik: 5 }, ownC: ['glut'], ownT: ['pastell'] };
     const C = await device(browser, 'C', legacy2);
     const D = await device(browser, 'D', legacy2);   // erreicht den Erfolg ebenfalls lokal, bevor es synchronisiert
+    // Seit 1.6.1 werden Erfolge per Antippen eingelöst: auf beiden Geräten einlösen
+    const claim = async d => {
+      if (!/function claimAch/.test(html)) return;
+      await d.page.click('#achFromMenu');
+      for (let i = 0; i < 20 && await d.page.locator('#progBody button.claim').count(); i++) { await d.page.locator('#progBody button.claim').first().click(); await d.page.waitForTimeout(150); }
+      await d.page.click('#progBack');
+    };
+    await claim(C); await claim(D);
     const reward = (await staub(C)) - 300;
     check(reward > 0, `Erfolg „Erster Fang“ gibt Belohnung (+${reward})`);
     await settle(C); await settle(D); await push(C); await settle(C); await push(D); await settle(D); await push(C);
