@@ -53,6 +53,7 @@ body.dim #sky{filter:brightness(.55) saturate(.8)}
 .pills .tempo{background:rgba(7,18,25,.6)}
 .shieldp{border-color:rgba(255,216,77,.5)!important;color:#ffd84d!important}
 .burnp{border-color:rgba(255,138,61,.55)!important;color:#ff9a5a!important}
+.pills .burnp.lade{color:rgba(255,154,90,.7)!important;border-color:rgba(255,138,61,.3)!important;background:linear-gradient(90deg,rgba(255,138,61,.28) var(--zp,0%),rgba(7,18,25,.6) var(--zp,0%))}
 .tempo{display:inline-block;padding:2px 10px;border-radius:999px;border:1px solid rgba(159,243,255,.45);color:#9ff3ff;font-family:var(--display);font-size:12px;font-weight:800;letter-spacing:.04em;font-variant-numeric:tabular-nums}
 .timer.low{color:var(--flare);animation:tick 1s infinite}
 @keyframes tick{0%,100%{transform:none}10%{transform:scale(1.12)}}
@@ -371,12 +372,30 @@ body.shopping .mid{padding-block:0}
 .adata .note small{display:block}
 .atest{display:flex;flex-direction:column;gap:8px;margin-top:6px;padding-top:10px;border-top:1px dashed var(--line)}
 #acct{max-width:380px}
+#fb{max-width:400px}
+.seg.seg4{grid-template-columns:repeat(4,1fr)}
+.fbta{min-height:128px;max-height:40vh;resize:none;line-height:1.4;font:15px/1.4 var(--body)}
+.fbcnt{align-self:flex-end;margin-top:-6px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.fbcnt.voll{color:var(--flare)}
+.fbdone{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:14px 4px}
+.fbdone b{font:800 34px var(--display);color:var(--comet)}
+@media (max-height:520px){.fbta{min-height:84px}}
 /* Freunde */
 .lbsegs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .fnews{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:9px 12px;border-radius:12px;background:rgba(255,180,84,.1);border:1px solid rgba(255,180,84,.45)}
 .fnews b{font-size:13.5px;color:var(--comet)}
 .fnews small{font-size:12px;color:var(--muted)}
 .fnews b::before{content:"\2691  ";color:var(--comet)}
+/* Tagessieger: goldene Karte im Menü, Zeile über der Tagesliste, Krone für Platz 1 */
+.tsnote{background:linear-gradient(135deg,rgba(255,209,102,.2),rgba(255,180,84,.08));border-color:rgba(255,209,102,.75)}
+.tsnote b{color:#ffd166}
+.tsnote b::before{content:"\265B  ";color:#ffd166}
+.tsnote.done{opacity:.85}
+.lbts{display:flex;flex-direction:column;gap:2px;margin:0 0 8px;padding:8px 12px;border-radius:12px;background:rgba(255,209,102,.1);border:1px solid rgba(255,209,102,.4);font-size:13px;line-height:1.35}
+.lbts b{color:#ffd166;font-size:13.5px}
+.lbts b::before{content:"\265B  "}
+.lbts small{color:var(--muted);font-size:12px}
+.lbrow.win .nm::after{content:" \265B";color:#ffd166}
 .fcode{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px;border-radius:12px;border:1px dashed var(--comet);background:rgba(255,180,84,.06);text-align:center}
 .fcode strong{font:800 24px var(--display);letter-spacing:.08em;color:var(--dust);-webkit-user-select:text;user-select:text}
 .fcode small{font-size:12px;color:var(--muted)}
@@ -533,9 +552,10 @@ body.shopping .mid{padding-block:0}
         <button class="mode daily" type="button" role="radio" data-mode="daily" id="mode-daily"><b>Tagesflug</b><span id="dailySub">Jeden Tag eine neue Welt</span></button>
       </div>
       <p class="mdesc" id="modeDesc"></p>
+      <button class="fnews tsnote" id="tsNote" type="button" hidden><b></b><small></small></button>
       <button class="fnews" id="fNews" type="button" hidden><b></b><small></small></button>
       <div class="keys">Leertaste, Pfeil hoch oder Tippen</div>
-      <div class="ver" id="ver">Orbitsprung 1.6.1</div>
+      <div class="ver" id="ver">Orbitsprung 1.6.2</div>
       </div>
       <div class="mact">
         <button class="go big" id="start" type="button">Starten</button>
@@ -563,8 +583,8 @@ body.shopping .mid{padding-block:0}
         <b>Flugzeit</b><span>Jede Sekunde im freien Flug gibt 5 Punkte, multipliziert mit deinem Tempo.</span>
         <b>Zeitlupe</b><span>Ab Tempo ×2,2 verlangsamt sich auf der Umlaufbahn die Zeit, dein Tempo bleibt voll erhalten. Im Flug läuft alles in Echtzeit. Ab ×3 zeigt ein Peilstrahl die Abschussrichtung (mit dem Upgrade Peilstrahl früher).</span>
         <b>Kette</b><span>Unter 1,2 s auf einer Bahn: Punkte ×2, ×3, ×4 und so weiter, ohne Obergrenze. Das Upgrade Kettenglied verlängert das Zeitfenster.</span>
-        <b>Notzündung</b><span>Mit dem Upgrade tippst du im Flug nochmal und lenkst bis zu 25° zum nächsten Ziel um.</span>
-        <b>Zerstören</b><span>Bei extremem Tempo zerschmetterst du Planeten und Sonnen beim Einschlag. Rot umrandete Körper gehen kaputt. Neutronensterne sind zu dicht.</span>
+        <b>Notzündung</b><span>Mit dem Upgrade tippst du im Flug nochmal und lenkst bis zu 25° zum nächsten Ziel um. Danach lädt sie sich nach ein paar neuen Planeten wieder auf.</span>
+        <b>Zerstören</b><span>Bei extremem Tempo zerschmetterst du Planeten und Sonnen beim Einschlag. Rot umrandete Körper gehen kaputt. Der Körper, um den du gerade kreist, bleibt heil. Neutronensterne sind zu dicht.</span>
         <b>Shop</b><span>Neben Skins gibt es Upgrades, Entdeckungen für neue Himmelskörper und zwei kaufbare Spielmodi.</span>
         <b>Bahnen</b><span>Echte Bahnmechanik: Schräger Einflug ergibt eine Ellipse, nah am Planeten bist du schneller. Stöße verändern die Bahn.</span>
         <b>Brocken</b><span>Asteroiden und fremde Kometen lenken dich ab und bremsen. Mit genug Tempo zerschmetterst du sie, dann leuchten sie rot.</span>
@@ -576,6 +596,7 @@ body.shopping .mid{padding-block:0}
         <b>Spielstand am Konto</b><span>Mit Konto werden Sternstaub, Skins, Upgrades, Erfolge, Statistik und freigeschaltete Modi am Konto gespeichert und auf allen Geräten abgeglichen. Gespielt wird trotzdem offline, abgeglichen wird, sobald Netz da ist. Beim ersten Anmelden auf einem Gerät gilt der weitere Spielstand: der vom Gerät oder der vom Konto.</span>
         <b>Zweite Chance</b><span>Im klassischen Modus kannst du einmal pro Runde gegen Staub am letzten Planeten weiterfliegen.</span>
         <b>Tagesflug</b><span>Jeden Tag eine feste Welt, bei jedem Versuch dieselben Planeten, mit eigenem Tagesrekord.</span>
+        <b>Tages&shy;sieger</b><span>Wer um Mitternacht Platz 1 im Tagesflug ist, bekommt 1.500 ✦. Jeder weitere Sieg in Folge bringt 500 ✦ mehr, bis 5.000 ✦. Einlösen im Menü (mit Konto).</span>
         <b>Kristall</b><span>Entdeckung: spiegelglatt, ein Aufprall kostet kein Tempo.</span>
         <b>Puls&shy;stern</b><span>Entdeckung: atmet alle 2 s, groß fängt er dich leicht.</span>
         <b>Eruptionen</b><span>Entdeckung: Flammenbögen stoßen dich aus der Bahn, Ausweichen gibt Staub.</span>
@@ -637,6 +658,7 @@ body.shopping .mid{padding-block:0}
         <button class="opt" id="optTut" type="button"><span><b>Einführung wiederholen</b><small id="optTutTxt">Zeigt die kurze Anleitung in der nächsten Runde noch einmal</small></span></button>
         <button class="opt" id="optAcct" type="button"><span><b>Konto und Bestenliste</b><small id="optAcctTxt">Nicht angemeldet</small></span></button>
         <button class="opt" id="optUpd" type="button"><span><b>Nach Updates suchen</b><small id="optUpdTxt">Version</small></span></button>
+        <button class="opt" id="optFb" type="button"><span><b>Feedback senden</b><small id="optFbTxt">Fehler, Ideen oder Lob direkt an den Entwickler</small></span></button>
         <button class="opt" id="optTest" type="button" role="switch" aria-checked="false" hidden><span><b>Kauf testen</b><small>Nur Testversion: sperrt Skins, Entdeckungen, Upgrades und Kaufmodi wieder. Staub bleibt.</small></span><i aria-hidden="true"></i></button>
       </div>
       <div class="ver" id="gfxInfo"></div>
@@ -682,6 +704,13 @@ body.shopping .mid{padding-block:0}
       <h1 id="acctTitle">Kon<span>to</span></h1>
       <div class="form" id="acctBody"></div>
       <div class="btns"><button class="go alt" id="acctBack" type="button">Zurück</button><button class="go" id="acctGo" type="button">Anmelden</button></div>
+    </div>
+
+    <div class="card" id="fb" hidden>
+      <div class="lbl">Orbitsprung</div>
+      <h1>Feed<span>back</span></h1>
+      <div class="form" id="fbBody"></div>
+      <div class="btns"><button class="go alt" id="fbBack" type="button">Zurück</button><button class="go" id="fbGo" type="button">Senden</button></div>
     </div>
 
     <div class="card shop" id="shop" hidden>
@@ -1107,7 +1136,7 @@ const lvl=id=>{const o=owned(id), a=save.upOn[id]; return typeof a==='number'?Ma
 // Werte der neuen Upgrades
 const chainWin=()=>1.2+.2*lvl('kette');
 const netK=()=>1+.06*lvl('netz');
-const aimThr=()=>[3,2.5,2,0][Math.min(3,lvl('peil'))];
+const aimThr=()=>[3,2,1.5,0][Math.min(3,lvl('peil'))];
 const hasD=id=>save.unl.includes(id)&&!save.dOff.includes(id);
 if(save.best && !save.bests.klassik) save.bests.klassik=save.best;
 const MODES={
@@ -1117,7 +1146,7 @@ const MODES={
   chaos:{name:'Chaos',desc:'Alle Planeten wandern, liegen enger beisammen und alles ist schneller. Dafür gibt es doppelten Staub.'},
   feld:{name:'Asteroidenfeld',price:1000,desc:'Dichte Trümmerfelder ab dem ersten Sprung. Zerschmettern gibt doppelte Punkte.'},
   hyper:{name:'Hyper',price:1500,desc:'Du startest mit Tempo ×2 und wirst nie langsamer. Alles geht schneller, auch die Punkte.'},
-  daily:{name:'Tagesflug',desc:'Jeden Tag eine neue, feste Welt: Bei jedem Versuch kommen dieselben Planeten. Ein Leben, eigener Tagesrekord.'}
+  daily:{name:'Tagesflug',desc:'Jeden Tag eine neue, feste Welt: Bei jedem Versuch kommen dieselben Planeten. Ein Leben, eigener Tagesrekord. Platz 1 um Mitternacht gewinnt 1.500 ✦, in Folge mehr.'}
 };
 let mode=(MODES[save.mode]&&(!MODES[save.mode].price||save.unl.includes(save.mode)))?save.mode:'klassik';
 function showBest(){elBest.textContent=modeBest(mode); const pb=$('plcBest'); if(pb){ const v=hiPOf(mode); pb.textContent=v>0?v:'–'; } fitDock(true);}
@@ -1408,7 +1437,7 @@ if(!save.sk) save.sk={}; if(!save.own) save.own={};
 for(const k in SKINSETS){ if(!save.sk[k]) save.sk[k]=SKINSETS[k].items[0].id; if(!save.own[k]) save.own[k]=[SKINSETS[k].items[0].id]; }
 const skinOf=k=>SKINSETS[k].items.find(i=>i.id===save.sk[k])||SKINSETS[k].items[0];
 // Spielversion: muss zum Menütext #ver passen. Die GitHub Action nimmt sie als Release-Tag v<APP_VERSION>
-const APP_VERSION='1.6.1';
+const APP_VERSION='1.6.2';
 // Nur in der Test-Artefakt-Version true: alle Skins, Spielmodi und Entdeckungen gehören dir, dazu viel Staub für Upgrades
 const TEST_BUILD=false;
 function testUnlock(){
@@ -1789,6 +1818,7 @@ const SFX={
   fall(){ osc(330,1.4,{type:'triangle',vol:.05,slide:.3,attack:.02,wet:.7}); noise(1.2,{vol:.06,f:900,f2:120,type:'lowpass',attack:.05,wet:.6,brown:true}); },
   timeup(){[12,7,0].forEach((st,i)=>osc(440*Math.pow(2,st/12),.5,{type:'triangle',vol:.06,at:i*.13,wet:.45}));},
   ui(){osc(880,.09,{vol:.035,wet:.2});},
+  zuendOk(){osc(523,.18,{type:'triangle',vol:.04,wet:.35}); osc(784,.26,{type:'triangle',vol:.035,at:.08,wet:.4});},
   start(){[0,7,12].forEach((st,i)=>osc(392*Math.pow(2,st/12),.35,{vol:.05,at:i*.05,wet:.45}));},
   buy(){[0,4,7,12].forEach((st,i)=>osc(523*Math.pow(2,st/12),.4,{vol:.05,at:i*.07,wet:.55}));},
   claim(){[0,7,12].forEach((st,i)=>osc(880*Math.pow(2,st/12),.25,{vol:.05,at:i*.05,wet:.4}));},
@@ -1811,6 +1841,10 @@ let fields=[], wdt=0, inField=null;
 let state='menu', prevState='menu', planets=[], P, camY=0, camT=0, score=0, combo=0, visited=0, runStaub=0, trail=[], parts=[], floats=[], time=0, overAt=0, hintT=0, timeLeft=60, tempoTxt='', timerTxt='';
 // Physik: Geschwindigkeit bleibt erhalten (kein Luftwiderstand im All), Planeten ziehen mit 1/r² an
 const BASE=280, GK=.7;
+// Mindestgrößen: Kleine Bahnen drehen sehr schnell. Bei Bahnradius 46 dauerte eine Runde bei hohem Tempo unter eine
+// halbe Sekunde, da ließ sich der Absprung nicht mehr zielen. Darum hat jede Bahn mindestens ORBIT_MIN
+// (im Chaos wie alle Bahnen × 0,92) und normale Planeten sind mindestens R_BODY_MIN groß.
+const ORBIT_MIN=68, R_BODY_MIN=9;
 // Tempo steigt in festen Schritten: jeder neue Planet +0,1, Sonnen (auch Eruptionssonne und Doppelstern) +0,2,
 // Neutronensterne +0,3 (Start und Schrittfaktor je Modus in FEEL). tInc sammelt die Schritte der Runde.
 // Beim Einfangen wird die Bahn genau auf dieses Tempo gesetzt; im Flug bleibt das Tempo konstant, die Schwerkraft lenkt nur.
@@ -1838,10 +1872,10 @@ function grav(p,d){
 function dims(d){
   // Größenverteilung: viele mittlere, einige kleine und große, selten Zwerge und Riesen
   const u=Math.random(); let r;
-  if(u<.09) r=rnd(6,9);                       // Zwerg
+  if(u<.09) r=rnd(10,13);                     // Zwerg (früher 6 bis 9: zu klein zum Steuern)
   else if(u<.17) r=rnd(48,64)*lerp(1,.85,d);  // Riese
-  else { const b=(Math.random()+Math.random()+Math.random())/3; r=lerp(10,44,b); }
-  r*=mode==='chaos'?.85:1;
+  else { const b=(Math.random()+Math.random()+Math.random())/3; r=lerp(12,44,b); }
+  r=Math.max(R_BODY_MIN,r*(mode==='chaos'?.85:1));
   return {size:Math.min(1,r/44),r,R:r*2.1+16,type:'normal'};
 }
 function pickType(d,prev){
@@ -1900,7 +1934,7 @@ function mkPlanet(x,y,d,first,dm){
     for(let i=0;i<n;i++) p.dust.push({a:a0+i*rnd(.45,.75),r0:R*rnd(.93,1.07),got:false});
     p.dw=rnd(.18,.32)*(Math.random()<.5?-1:1);
     if(type==='binar'||type==='nova'||type==='flare') p.vx=0;
-    if(type==='puls'){ const b={r:p.r,R:p.R/1.16,m:p.m}; p.ps={b,ph:rnd(0,TAU),s:0}; p.R=b.R; }
+    if(type==='puls'){ const b={r:p.r,R:Math.max(p.R/1.16,ORBIT_MIN*(mode==='chaos'?.92:1)),m:p.m}; p.ps={b,ph:rnd(0,TAU),s:0}; p.R=b.R; }
     if(type==='nova') p.nv={fuse:0,lit:false,left:0,tick:0};
     if(type==='flare') p.fl={st:'idle',t:rnd(1,2),a:0,dodge:0,on:false,hit:false};
   }
@@ -1959,7 +1993,7 @@ function reset(){
   fields=[]; planets=[]; rocks=[]; swarms={}; cine=null; motes=[]; trail=[]; parts=[]; floats=[]; rings=[]; coins=[]; banners=[]; shake=0; slow=0; score=0; tInc=0; combo=0; visited=0; runStaub=0; camY=0; camT=0; timeLeft=60;
   const p0=mkPlanet(W/2,H*CAM_Y,0,true); p0.ord=0; planets.push(p0);
   while(planets[planets.length-1].y>camY-H) spawn();
-  P={mode:'orbit',pl:p0,a:-Math.PI/2,dir:1,t:0,rad:p0.R,rv:0,x:p0.x,y:p0.y-p0.R,vx:0,vy:0,spd:floorSpd(),noHit:0,shield:lvl('schild'),burns:lvl('zuend'),from:null,quick:false,alive:true};
+  P={mode:'orbit',pl:p0,a:-Math.PI/2,dir:1,t:0,rad:p0.R,rv:0,x:p0.x,y:p0.y-p0.R,vx:0,vy:0,spd:floorSpd(),noHit:0,shield:lvl('schild'),burns:lvl('zuend')>0?1:0,zProg:0,zSeen:0,from:null,quick:false,alive:true};
   setOrbit(p0,0,-p0.R,0,P.spd,1);
   updHud(); updTimer(); newRun();
 }
@@ -1983,13 +2017,25 @@ function shieldBounce(){
   ring(P.x,P.y,'#ffd84d',70,3,.5); burst(P.x,P.y,'#ffd84d',16,160); kick(6);
   float(Math.min(W-50,Math.max(50,P.x)),P.y-18,'Randschild','#ffd84d'); SFX.bounce(); buzz(28);
 }
+// Notzündung lädt nach neuen Planeten wieder auf: Stufe 1 nach 8, Stufe 2 nach 6, Stufe 3 nach 4. Höchstens eine Ladung,
+// solange sie bereit ist, zählen neue Planeten nicht vor.
+const ZUEND_N=[0,8,6,4];
+function zuendNeed(){ return ZUEND_N[Math.min(ZUEND_N.length-1,lvl('zuend'))]||0; }
+function zuendTick(){
+  const n=zuendNeed(); if(!n||!(visited>P.zSeen)) return;
+  const d=visited-P.zSeen; P.zSeen=visited;
+  if(P.burns>0) return;
+  P.zProg=(P.zProg||0)+d;
+  if(P.zProg>=n){ P.burns=1; P.zProg=0; float(P.x,P.y-30,'Notzündung bereit','#ff9a5a'); SFX.zuendOk(); buzz(14); }
+}
 function updTempo(){
   // Schild und Zündung behalten ihren Platz die ganze Runde: Aufgebraucht werden sie nur unsichtbar, nicht entfernt
   const run=state==='play'&&P&&P.alive;
   const sh=run&&lvl('schild')>0?(P.shield>0?'Schild ×'+P.shield:'-'):'';
   if(sh!==shieldTxt){ shieldTxt=sh; const e=$('shieldPill'); e.hidden=!sh; e.classList.toggle('off',sh==='-'); if(sh&&sh!=='-') e.textContent=sh; }
-  const bt=run&&lvl('zuend')>0?(P.burns>0?'Zündung ×'+P.burns:'-'):'';
-  if(bt!==burnTxt){ burnTxt=bt; const e=$('burnPill'); e.hidden=!bt; e.classList.toggle('off',bt==='-'); if(bt&&bt!=='-') e.textContent=bt; }
+  if(run) zuendTick();
+  const zn=zuendNeed(), bt=run&&zn?(P.burns>0?'Zündung bereit':'Zündung '+P.zProg+'/'+zn):'';
+  if(bt!==burnTxt){ burnTxt=bt; const e=$('burnPill'); e.hidden=!bt; e.classList.toggle('lade',!!bt&&!(P.burns>0)); e.style.setProperty('--zp',bt&&!(P.burns>0)?Math.round(100*P.zProg/zn)+'%':'0%'); if(bt) e.textContent=bt; }
   const tv=P&&P.alive?tempoNow():1;
   const t=tv>=1.05?'Tempo ×'+tv.toFixed(1).replace('.',','):'';
   if(t!==tempoTxt){tempoTxt=t; elTempo.hidden=!t; elTempo.textContent=t;}
@@ -2124,7 +2170,7 @@ function launch(){
   SFX.launch(sp/BASE); buzz(10);
   hintT=0; tutGo(1);
 }
-// Notzündung: im Flug einmal nachlenken, höchstens 25° in Richtung des besten Ziels vor dir. Das Tempo bleibt gleich.
+// Notzündung: im Flug nachlenken (lädt nach neuen Planeten wieder auf), höchstens 25° in Richtung des besten Ziels vor dir. Das Tempo bleibt gleich.
 function igniteTarget(){
   const sp=Math.hypot(P.vx,P.vy)||1, a0=Math.atan2(P.vy,P.vx);
   let best=null, bestScore=Infinity;
@@ -2413,7 +2459,8 @@ function surface(p,nx,ny){
   const rvx=P.vx-(p.vx||0), rvy=P.vy, vn=rvx*nx+rvy*ny;
   P.x=p.x+nx*(p.r+4.5); P.y=p.y+ny*(p.r+4.5);
   if(vn>=0) return;
-  if(canShatter(p)&&Math.hypot(rvx,rvy)>=planetThr(p)){ P.x-=nx*2; shatter(p); return; }
+  // Der Planet, um den du gerade kreist, ist immun: auf ihm prallst du nur ab, egal wie schnell du bist
+  if(canShatter(p)&&!(P.mode==='orbit'&&P.pl===p)&&Math.hypot(rvx,rvy)>=planetThr(p)){ P.x-=nx*2; shatter(p); return; }
   if(p.type==='kristall'){ mirror(p,nx,ny,rvx,rvy,vn); return; }
   const sun=sunny(p), pz=lvl('panzer');
   const e=(sun?.2:.35)+.12*pz, mu=Math.max(.05,.3-.1*pz);
@@ -2532,7 +2579,7 @@ function massR(type,r){
   const m=(TYPES[type]?TYPES[type].dens:1)*(r/24)*(r/24), g=m/(r/24);
   const R=r*1.3+22+16*Math.sqrt(Math.min(g,6));
   // Insgesamt etwas größere Bahnen; auf schmalen Bildschirmen begrenzt, damit sie ins Bild passen
-  return Math.max(r+28,Math.min(Math.min(128,W*.3),R*1.22))*(mode==='chaos'?.92:1);
+  return Math.max(r+28,ORBIT_MIN,Math.min(Math.min(128,W*.3),R*1.22))*(mode==='chaos'?.92:1);
 }
 function camFloor(){return lowestY()+H*2-20-H;}
 function die(reason='miss'){
@@ -3550,12 +3597,17 @@ function draw(){
     if(P.alive && state==='play' && P.mode==='orbit'){
       const tv=P.spd/BASE, pl=lvl('peil'), thr=aimThr();
       if(tv>thr){
-        const k=Math.min(1,(pl?.45:0)+(tv-thr)/1.5), len=(50+40*Math.min(3,tv-thr))*(1+.25*pl);
+        // Ziellinie: Größe wie bisher, aber kräftiger: dunkler Rand darunter, aufgehellte Farbe, höhere Deckkraft
+        const k=Math.min(1,.8+(tv-thr)/1.5), len=(50+40*Math.min(3,tv-thr))*(1+.25*pl);
         const vl=Math.hypot(P.ovx,P.ovy)||1, tx=P.ovx/vl, ty=P.ovy/vl, col=skinC().glow;
-        const g=cx.createLinearGradient(P.x,P.y-camY,P.x+tx*len,P.y-camY+ty*len);
-        g.addColorStop(0,rgba(col,.55*k)); g.addColorStop(1,rgba(col,0));
-        cx.strokeStyle=g; cx.lineWidth=1.5; cx.setLineDash([5,6]);
-        cx.beginPath(); cx.moveTo(P.x+tx*10,P.y-camY+ty*10); cx.lineTo(P.x+tx*len,P.y-camY+ty*len); cx.stroke(); cx.setLineDash([]);
+        const n=parseInt(col.slice(1),16), li=v=>Math.round(v+(255-v)*.45), lc=[li(n>>16),li(n>>8&255),li(n&255)].join(',');
+        const x0=P.x+tx*10, y0=P.y-camY+ty*10, x1=P.x+tx*len, y1=P.y-camY+ty*len;
+        const gd=cx.createLinearGradient(x0,y0,x1,y1); gd.addColorStop(0,`rgba(2,6,14,${(.7*k).toFixed(3)})`); gd.addColorStop(1,'rgba(2,6,14,0)');
+        const g=cx.createLinearGradient(x0,y0,x1,y1); g.addColorStop(0,`rgba(${lc},${(.98*k).toFixed(3)})`); g.addColorStop(.75,`rgba(${lc},${(.55*k).toFixed(3)})`); g.addColorStop(1,`rgba(${lc},0)`);
+        cx.save(); cx.setLineDash([5,6]); cx.lineCap='round';
+        cx.strokeStyle=gd; cx.lineWidth=3.2; cx.beginPath(); cx.moveTo(x0,y0); cx.lineTo(x1,y1); cx.stroke();
+        cx.strokeStyle=g; cx.lineWidth=1.6; cx.stroke();
+        cx.restore();
       }
     }
     if(tut&&tut.step===0&&P.alive&&state==='play'&&P.mode==='orbit') drawAim();
@@ -3643,9 +3695,9 @@ const UPGRADES=[
   {id:'doppel',name:'Staubveredler',desc:'Pro Stufe 20 % Chance auf doppelten Staub aus Funkeln',prices:[500,1000,2000]},
   {id:'panzer',name:'Aufprallpanzer',desc:'Pro Stufe federst du bei einem Aufprall stärker zurück und verlierst weniger Tempo',prices:[600,1400]},
   {id:'schild',name:'Randschild',desc:'Pro Stufe prallst du einmal pro Runde vom Bildrand ab, statt zu verglühen',prices:[1500,3000]},
-  {id:'zuend',name:'Notzündung',desc:'Pro Stufe einmal pro Runde im Flug nochmal tippen: Du lenkst bis zu 25° zum nächsten Ziel um',prices:[1200,2500]},
+  {id:'zuend',name:'Notzündung',desc:'Im Flug nochmal tippen: bis zu 25° zum nächsten Ziel lenken. Lädt nach 8 / 6 / 4 neuen Planeten wieder auf',prices:[1200,2500,4000]},
   {id:'netz',name:'Fangnetz',desc:'Umlaufbahnen fangen dich pro Stufe in 6 % größerem Abstand ein',prices:[600,1300,2400]},
-  {id:'peil',name:'Peilstrahl',desc:'Der Zielstrahl erscheint ab Tempo ×2,5, dann ×2, auf Stufe 3 immer, und wird länger',prices:[400,900,1500]},
+  {id:'peil',name:'Peilstrahl',desc:'Der Zielstrahl erscheint ab Tempo ×2, dann ×1,5, auf Stufe 3 immer, und wird länger',prices:[400,900,1500]},
   {id:'kette',name:'Kettenglied',desc:'Das Zeitfenster für die Kette wächst pro Stufe um 0,2 s (Start 1,2 s)',prices:[500,1100,2000]},
   {id:'lang',name:'Langstrecke',desc:'Flugzeit gibt pro Stufe 20 % mehr Punkte',prices:[400,900,1600]},
   {id:'zins',name:'Staubzins',desc:'Am Rundenende bekommst du 2 % deiner Punkte pro Stufe zusätzlich als ✦ (nicht in Zen)',prices:[800,1800,3500]}
@@ -4013,7 +4065,7 @@ function showSheet(inPlay){
   renderOpts(); updGfxInfo();
   $('pTitle').innerHTML=inPlay?'Pau<span>se</span>':'Einstel<span>lungen</span>';
   $('pMode').textContent=inPlay?'Modus: '+MODES[mode].name:'Orbitsprung';
-  $('pStat').hidden=!inPlay; $('pBtnsPlay').hidden=!inPlay; $('pBtnsMenu').hidden=inPlay; $('optTut').hidden=inPlay; $('optAcct').hidden=inPlay; $('optUpd').hidden=inPlay; updOptTxt(); lbOptTxt();
+  $('pStat').hidden=!inPlay; $('pBtnsPlay').hidden=!inPlay; $('pBtnsMenu').hidden=inPlay; $('optTut').hidden=inPlay; $('optAcct').hidden=inPlay; $('optUpd').hidden=inPlay; $('optFb').hidden=inPlay; updOptTxt(); lbOptTxt(); fbOptTxt();
   $('optTutTxt').textContent=save.tut?'Zeigt die kurze Anleitung in der nächsten Runde noch einmal':'Die Anleitung startet mit der nächsten Runde';
   $('pKeys').textContent=inPlay?'Esc oder Leertaste: weiter':'Esc: zurück';
   if(inPlay){ $('pScore').textContent=score; $('pPlanets').textContent=passedN; $('pSector').textContent=runSec; }
@@ -4068,6 +4120,7 @@ window.addEventListener('keydown',e=>{
   if(state==='rules'){ if(e.code==='Escape') closeRules(); return; }
   if(state==='lb'){ if(e.code==='Escape') lbClose(); return; }
   if(state==='acct'){ if(e.code==='Escape') $('acctBack').click(); return; }
+  if(state==='feedback'){ if(e.code==='Escape') fbClose(); return; }
   if(state==='pause'){
     if(e.code==='Escape'||(e.code==='Space'&&!(e.target.closest&&e.target.closest('button,input')))){ e.preventDefault(); resumeGame(); }
     return;
@@ -4607,6 +4660,7 @@ async function lbFlush(force){
   finally{ lbBusy=false; lbAfterSync(); }
 }
 function lbAfterSync(){
+  if(typeof tsMenu==='function') tsMenu();
   if(lbOverRid&&state==='over'){
     const a=lbRes[lbOverRid];
     if(a) fLbShow(a.ok?'done':'rejected',a);
@@ -4628,9 +4682,10 @@ function lbLoggedIn(j){
   lbS.qOwner=owner; lbS.token=j.token; lbS.name=j.name; lbS.needLogin=null; lbS.authMsg=null; lbS.lastReject=null; lbNet='ok';
   // Die Runde direkt vor der Anmeldung zählt noch (höchstens eine Stunde alt)
   if(lbAnon&&Date.now()-lbAnon.at<3600e3&&lbQueue(lbAnon.e)) lbOverRid=lbAnon.e.rid;
-  lbAnon=null; lbSave(); lbFlush(true); setTimeout(()=>frLoad(true),400); setTimeout(()=>progSync(),300);
+  if(lbS.ts&&lbS.ts.owner!==owner){ lbS.ts=null; lbS.tsMeld=[]; }
+  lbAnon=null; lbSave(); lbFlush(true); setTimeout(()=>frLoad(true),400); setTimeout(()=>progSync(),300); setTimeout(()=>tsLoad(true),600);
 }
-function lbLocalLogout(){ frReset(); lbS.token=null; lbS.name=null; lbS.needLogin=null; lbS.authMsg=null; lbS.queue=[]; lbS.sent={}; lbS.qOwner=null; lbS.lastReject=null; lbSave(); }
+function lbLocalLogout(){ frReset(); lbS.ts=null; lbS.tsMeld=[]; if(typeof tsMenu==='function') setTimeout(tsMenu,0); lbS.token=null; lbS.name=null; lbS.needLogin=null; lbS.authMsg=null; lbS.queue=[]; lbS.sent={}; lbS.qOwner=null; lbS.lastReject=null; lbSave(); }
 function lbStatusTxt(){
   const n=lbS.queue.length, w=n===1?'1 Ergebnis wartet':n+' Ergebnisse warten';
   if(!lbS.token) return lbS.needLogin?'Abgemeldet · bitte neu anmelden':'Nicht angemeldet · Rekorde nur auf diesem Gerät';
@@ -4751,7 +4806,7 @@ function lbRender(){
   lbRenderList();
 }
 function lbRow(e,cls){
-  const r=document.createElement('div'); r.className='lbrow'+(e.platz%2?' odd':'')+(e.platz<=3?' top'+e.platz:'')+(e.ich?' me':'')+(cls?' '+cls:'');
+  const r=document.createElement('div'); r.className='lbrow'+(e.platz%2?' odd':'')+(e.platz<=3?' top'+e.platz:'')+(e.ich?' me':'')+(e.win?' win':'')+(cls?' '+cls:'');
   r.innerHTML=`<span class="pl">${nf(e.platz)}</span><span class="nm"></span><span class="pt">${nf(e.punkte)}<small>${nf(e.planeten)} Planeten</small></span>`;
   const nm=r.querySelector('.nm'); nm.textContent=e.name;
   if(e.test){ const o=document.createElement('small'); o.textContent='Testrunde'; o.title='Nur für dich sichtbar'; nm.appendChild(o); }
@@ -4770,7 +4825,11 @@ function lbRenderList(){
   else if(!c){ msg(lbLoading?'Lade Bestenliste …':'Keine Verbindung zum Server. Sobald du online bist, erscheint hier die Liste.'); }
   else if(fr&&!c.d.eintraege.length){ msg(nf0?'Du hast noch keine Freunde. Füge welche über ihren Namen oder Freundescode hinzu.':(q.modus==='daily'?'Heute hat noch keiner von euch den Tagesflug beendet.':'In diesem Modus hat noch keiner von euch ein Ergebnis.')); }
   else if(!c.d.eintraege.length){ msg(q.modus==='daily'?'Heute hat noch niemand den Tagesflug beendet. Sei die erste Person!':'Hier steht noch niemand. Sei die erste Person!'); }
-  else for(const e of c.d.eintraege){ if(e.ich) meRow(e); else L.appendChild(lbRow(e)); }
+  else{
+    const ts=q.modus==='daily'&&c.d.tagessieger, win=ts&&ts.zu&&ts.sieger&&!fr?ts.sieger.name:null;
+    if(ts) tsListLine(L,ts,c.d);
+    for(const e0 of c.d.eintraege){ const e=win&&e0.platz===1&&e0.name===win?Object.assign({win:true},e0):e0; if(e.ich) meRow(e); else L.appendChild(lbRow(e)); }
+  }
   // Eigener Eintrag außerhalb der geladenen Liste: hinten anhängen (nach „· · ·“), klebt unten am Rand
   if(lbS.token&&!fr&&c&&c.d.ich&&!c.d.eintraege.some(e=>e.ich)){
     if(c.d.eintraege.length&&c.d.ich.platz>c.d.eintraege.length+1){ const g=document.createElement('div'); g.className='lbgap'; g.setAttribute('aria-hidden','true'); g.textContent='· · ·'; L.appendChild(g); }
@@ -4928,6 +4987,7 @@ function acctRender(){
   if(TEST_BUILD&&(acctMode==='main'||acctMode==='login'||acctMode==='reg')){
     h+=`<div class="atest"><span class="lbl">Nur Testversion</span>`
       +`<button class="opt" id="tSrv" type="button" role="switch" aria-checked="${lbS.srv==='echt'}"><span><b>Echter Server</b><small>${lbS.srv==='echt'?'Spricht mit '+LB_URL.replace('https://','')+'. Testrunden sind dort nur für dich sichtbar.':'Aus: eingebauter Schein-Server mit Beispielspielern'}</small></span><i aria-hidden="true"></i></button>`
+      +(lbS.srv==='echt'||acctMode!=='main'?'':`<button class="opt" id="tTs" type="button"><span><b>Tagessieg simulieren</b><small>Du hast die letzten 3 Tage den Tagesflug gewonnen (Serie 1, 2, 3 = 1.500 + 2.000 + 2.500 ✦). Danach ins Menü.</small></span></button>`)
       +(lbS.srv==='echt'||acctMode!=='main'?'':`<button class="opt" id="tDev" type="button"><span><b>Anderes Gerät spielt</b><small>Auf einem zweiten Handy kommen +250 ✦, eine Runde und ein Skin dazu. Danach „Spielstand abgleichen“.</small></span></button>`)
       +(lbS.srv==='echt'?'':`<button class="opt" id="tOff" type="button" role="switch" aria-checked="${!!lbS.mockOff}"><span><b>Schein-Server offline</b><small>Wie Flugmodus: nichts wird übertragen</small></span><i aria-hidden="true"></i></button>`
       +`<button class="opt" id="tSlow" type="button" role="switch" aria-checked="${!!lbS.mockSlow}"><span><b>Schein-Server langsam</b><small>Antwortet erst nach 8 Sekunden (Zeitgrenze 6 s)</small></span><i aria-hidden="true"></i></button>`
@@ -4959,6 +5019,7 @@ function acctRender(){
   on('aData',()=>{ acctMode='data'; acctErr=''; acctData=''; acctDataAll=false; acctInfo=''; SFX.ui(); acctRender(); acctLoadData(); });
   on('tSrv',()=>{ lbS.srv=lbS.srv==='echt'?'schein':'echt'; lbLocalLogout(); lbS.cache={}; lbSave(); lbNet='?'; acctMode='login'; acctErr=''; SFX.ui(); acctRender(); });
   on('tDev',async()=>{ SFX.ui(); try{ const x=await lbCall('POST','/v1/_test/anderes-geraet',{bereich:progBer()}); acctInfo=x.status===200?'Das andere Gerät hat gespielt. Tippe auf „Spielstand abgleichen“.':(x.j.fehler||'Fehler'); acctErr=''; }catch(e){ acctErr='Schein-Server offline.'; } acctRender(); });
+  on('tTs',async()=>{ SFX.ui(); try{ const x=await lbCall('POST','/v1/_test/tagessieg',{}); if(x.status===200){ acctInfo=`Tagessieger am ${x.j.tage.map(tsDe).join(', ')}. Im Menü einlösen: +${nf(x.j.staub)} ✦`; acctErr=''; lbS.cache={}; await tsLoad(true); } else acctErr=x.j.fehler||'Fehler'; }catch(e){ acctErr='Schein-Server offline.'; } acctRender(); });
   on('tOff',()=>{ lbS.mockOff=!lbS.mockOff; lbSave(); SFX.ui(); acctRender(); if(!lbS.mockOff) lbFlush(true); });
   on('tMany',()=>{ lbS.mockMany=!lbS.mockMany; lbS.cache={}; lbSave(); SFX.ui(); acctRender(); });
   on('tSlow',()=>{ lbS.mockSlow=!lbS.mockSlow; lbSave(); SFX.ui(); acctRender(); });
@@ -4978,7 +5039,7 @@ const adMode=m=>LB_SHORT[m]||String(m||'?');
 const adRow=(l,sub,r,cls)=>`<div class="srow${cls?' '+cls:''}"><span>${l}${sub?`<small>${sub}</small>`:''}</span><b>${r}</b></div>`;
 const AD_MAX=15;
 function acctDataHtml(){
-  const D=acctData;
+  const D=acctData; if(D&&typeof D==='object'&&mockFbDaten&&mockFbDaten.length&&TEST_BUILD&&lbS.srv!=='echt'&&!D.feedback) D.feedback=mockFbDaten;
   if(!D) return '<p class="note">Lade …</p>';
   if(typeof D!=='object') return `<p class="note">${lbEsc(D)}</p>`;
   const k=D.konto||{}, S=Array.isArray(D.sitzungen)?D.sitzungen:null, R=Array.isArray(D.runden)?D.runden:[];
@@ -5019,6 +5080,12 @@ function acctDataHtml(){
       h+=adRow('Erfolge'+t,nf(+u.erfolgeEingeloest||0)+' davon eingelöst',nf(+u.erfolge||0));
       h+=adRow('Gespielte Runden'+t,'',nf(+u.runden||0));
     }
+    h+=`</div>`;
+  }
+  // Feedback (ab Server 1.5.0, nur das mit deinem Namen gesendete)
+  if(Array.isArray(D.feedback)&&D.feedback.length){
+    h+=`<div class="ssec"><span class="lbl">Dein Feedback</span>`;
+    h+=D.feedback.map(f=>{ const t=String(f.text||''), k=t.length>90?t.slice(0,90)+' …':t; return adRow(lbEsc(f.art||'Feedback'),lbEsc(adDate(f.erstellt))+' · '+lbEsc(k),''); }).join('');
     h+=`</div>`;
   }
   // Bestwerte je Modus
@@ -5291,6 +5358,94 @@ $('fNews').addEventListener('click',()=>{
   else{ acctOpen('friends'); }
 });
 
+// ---- Tagessieger im Tagesflug ----
+// Der Server hält um Mitternacht (plus 30 Minuten Nachreichzeit) Platz 1 jedes Tages fest. Belohnung 1.500 ✦,
+// jeder weitere Sieg in Folge +500 ✦, höchstens 5.000 ✦. Das Spiel holt offene Belohnungen und schreibt sie per Antippen
+// als feste Buchung 'ts:<tag>' gut. So zählt sie auch mit mehreren Geräten nur einmal. Danach meldet es „abgeholt“,
+// damit andere Geräte sie nicht mehr anbieten. Offline einlösen geht, die Meldung folgt später.
+const TS={basis:1500,plus:500,max:5000};
+const tsStaub=n=>Math.min(TS.max,TS.basis+TS.plus*Math.max(0,n-1));
+const tsKey=t=>'ts:'+t;
+const tsPaid=t=>save.dust.e[tsKey(t)]!=null;
+const tsDe=t=>{ const p=String(t).split('-'); return (+p[2])+'.'+(+p[1])+'.'; };
+let tsLoading=false, tsLast=0, tsDoneT=0;
+if(!Array.isArray(lbS.tsMeld)) lbS.tsMeld=[];
+function tsMine(){ return lbS.token&&lbS.ts&&lbS.ts.owner===lbNorm(lbS.name); }
+function tsOffen(){ return tsMine()&&Array.isArray(lbS.ts.offen)?lbS.ts.offen.filter(o=>o&&o.tag&&o.staub>0&&!tsPaid(o.tag)):[]; }
+async function tsLoad(force){
+  if(!lbS.token||tsLoading) return;
+  if(!force&&Date.now()-tsLast<60e3) return;
+  tsLoading=true; tsLast=Date.now();
+  try{
+    const x=await lbCall('GET','/v1/belohnungen');
+    if(x.status===200&&x.j&&Array.isArray(x.j.offen)){
+      lbNet='ok';
+      if(x.j.regeln&&x.j.regeln.basis>0){ TS.basis=x.j.regeln.basis; TS.plus=x.j.regeln.plus; TS.max=x.j.regeln.max; }
+      lbS.ts={offen:x.j.offen,serie:x.j.serie||0,at:Date.now(),owner:lbNorm(lbS.name)};
+      // Auf einem Gerät schon gutgeschrieben, Meldung aber verloren gegangen: jetzt melden
+      for(const o of x.j.offen) if(tsPaid(o.tag)&&!lbS.tsMeld.includes(o.tag)) lbS.tsMeld.push(o.tag);
+      lbSave(); tsReport();
+    }else if(x.status===401||x.status===403) lbAuthLost(x.j.fehler);
+  }catch(e){ lbNet='off'; }
+  tsLoading=false; tsMenu();
+}
+// Dem Server melden, welche Tage gutgeschrieben sind. Die Testversion meldet echte Siege nie (sonst fehlten sie in der App).
+async function tsReport(){
+  if(!lbS.token||!lbS.tsMeld.length||(TEST_BUILD&&lbS.srv==='echt')) return;
+  const tage=lbS.tsMeld.slice(0,60);
+  try{
+    const x=await lbCall('POST','/v1/belohnungen/abholen',{tage});
+    if(x.status===200||x.status===400){ lbS.tsMeld=lbS.tsMeld.filter(t=>!tage.includes(t)); lbSave(); }
+  }catch(e){}
+}
+function tsClaim(el){
+  const L=tsOffen(); if(!L.length) return 0;
+  let n=0;
+  for(const o of L){ addStaub(o.staub,tsKey(o.tag)); n+=o.staub; if(!lbS.tsMeld.includes(o.tag)) lbS.tsMeld.push(o.tag); }
+  lbSave(); persist(); showStaub(true); SFX.claim(); buzz([10,30,10]); claimPop(el,n);
+  tsDoneT=Date.now(); tsMenu(n); tsReport();
+  return n;
+}
+function tsMenu(eingeloest){
+  const e=$('tsNote'); if(!e) return;
+  const L=tsOffen();
+  if(eingeloest){
+    e.classList.add('done'); e.querySelector('b').textContent='Eingelöst!';
+    e.querySelector('small').textContent='+'+nf(eingeloest)+' ✦ für deinen Tagessieg gutgeschrieben'; e.hidden=false;
+    setTimeout(()=>{ if(Date.now()-tsDoneT>=2400) tsMenu(); },2500); return;
+  }
+  e.classList.remove('done');
+  if(!L.length){ e.hidden=true; return; }
+  const sum=L.reduce((a,o)=>a+o.staub,0), best=L.reduce((a,o)=>Math.max(a,o.serie||1),1);
+  e.querySelector('b').textContent=L.length===1?`Tagessieger am ${tsDe(L[0].tag)}!`:`${L.length}× Tagessieger!`;
+  e.querySelector('small').textContent='Platz 1 im Tagesflug'+(best>1?` · ${best} Tage in Folge`:'')+` · Tippen: +${nf(sum)} ✦ einlösen`;
+  e.setAttribute('aria-label',`Tagessieg einlösen, ${nf(sum)} Sternstaub`);
+  e.hidden=false;
+}
+// Zeile über der Tagesliste: Sieger eines abgeschlossenen Tages oder was Platz 1 heute bekommt
+function tsListLine(L,ts,d){
+  const box=document.createElement('div'); box.className='lbts';
+  const b=document.createElement('b'), sm=document.createElement('small');
+  if(ts.zu){
+    if(!ts.sieger) return;
+    const ich=lbS.token&&lbNorm(ts.sieger.name)===lbNorm(lbS.name);
+    b.textContent=ich?`Du bist Tagessieger! +${nf(ts.sieger.staub)} ✦`:`Tagessieger: ${ts.sieger.name}`;
+    sm.textContent=(ts.sieger.serie>1?`${ts.sieger.serie} Tage in Folge auf Platz 1 · `:'')+(ich?(tsOffen().some(o=>'d'+o.tag===d.schluessel)?'Einlösen im Menü':'Eingelöst'):`+${nf(ts.sieger.staub)} ✦ gewonnen`);
+  }else{
+    b.textContent=`Platz 1 um Mitternacht: +${nf(ts.staub)} ✦`;
+    const ich=lbS.token&&ts.fuehrt&&lbNorm(ts.fuehrt)===lbNorm(lbS.name);
+    sm.textContent=ts.fuehrt&&ts.serie>1?(ich?`Du führst: das wäre dein ${ts.serie}. Sieg in Folge`:`${ts.fuehrt} führt und holt sonst den ${ts.serie}. Sieg in Folge`)
+      :ich?'Du führst gerade. Jeder weitere Sieg in Folge bringt 500 ✦ mehr.'
+      :`Jeder weitere Sieg in Folge bringt ${nf(TS.plus)} ✦ mehr, bis ${nf(TS.max)} ✦.`;
+  }
+  box.append(b,sm); L.appendChild(box);
+}
+$('tsNote').addEventListener('click',e=>{ if(tsOffen().length) tsClaim(e.currentTarget); });
+setTimeout(()=>{ tsMenu(); tsLoad(true); },2600);
+setInterval(()=>{ if(document.visibilityState==='visible'&&state==='menu') tsLoad(false); },5*60e3);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') tsLoad(false); });
+window.addEventListener('online',()=>{ tsReport(); tsLoad(true); });
+
 // ---- QR-Code zeigen und scannen ----
 // Bibliotheken liegen als Text im Spiel und werden erst beim ersten Gebrauch geladen (qrcode-generator, MIT; jsQR, Apache-2.0)
 function qrLib(id,glob){
@@ -5560,6 +5715,116 @@ document.addEventListener('visibilitychange',()=>{ if(!lbS.token) return; if(doc
 window.addEventListener('online',()=>progSync(true));
 var progReady=true;
 
+// ---------- Feedback an den Entwickler ----------
+// Geht ohne Konto und ohne Netz: Nachrichten warten auf dem Gerät (orbitsprung.fb) und gehen raus, sobald der Server
+// erreichbar ist. Jede Nachricht hat eine eigene ID (fid), doppelt ankommen schadet nicht. Den Kontonamen schickt
+// das Spiel nur mit, wenn der Spieler das will und noch mit demselben Konto angemeldet ist.
+const FB_KEY='orbitsprung.fb', FB_MAX=2000, FB_QMAX=20;
+const FB_ARTEN=[['fehler','Fehler','Was ist passiert? Was hast du gerade gemacht?'],['idee','Idee','Was würdest du dir wünschen?'],['lob','Lob','Was gefällt dir?'],['sonst','Sonstiges','Schreib einfach los.']];
+let fbS={}; try{ fbS=JSON.parse(localStorage.getItem(FB_KEY)||'{}')||{}; }catch(e){ fbS={}; }
+if(!Array.isArray(fbS.queue)) fbS.queue=[]; if(!fbS.draft||typeof fbS.draft!=='object') fbS.draft={art:'idee',text:'',name:true};
+function fbSave(){ try{ localStorage.setItem(FB_KEY,JSON.stringify(fbS)); }catch(e){} }
+let fbFrom=null, fbView='form', fbErr='', fbBusy=false, fbFlushing=null, fbDone=null, mockFbDaten=null;
+const fbLen=t=>[...String(t||'')].length;
+// Kurze Geräteangabe zum Nachvollziehen von Fehlern: Android-Version, Modell, Bildschirm (keine Kennung)
+function fbGeraet(){
+  const ua=navigator.userAgent||'', a=/Android\s([\d.]+)/.exec(ua), m=/Android[^;)]*;\s*(?:[a-z]{2}[-_][A-Za-z]{2};\s*)?([^;)]+?)(?:\sBuild\/[^;)]*)?[;)]/.exec(ua);
+  const mod=m&&m[1]&&!/^(wv|K|Linux|U)$/.test(m[1].trim())?m[1].trim():'';
+  const w=Math.round(screen.width||innerWidth), h=Math.round(screen.height||innerHeight);
+  return [a?'Android '+a[1]:'', mod, w+'×'+h].filter(Boolean).join(' · ').slice(0,80);
+}
+function fbOptTxt(){
+  const e=$('optFbTxt'); if(!e) return; const n=fbS.queue.length;
+  e.textContent=n?(n===1?'1 Nachricht wartet auf Verbindung':n+' Nachrichten warten auf Verbindung'):'Fehler, Ideen oder Lob direkt an den Entwickler';
+}
+function fbOpen(){
+  if(state!=='settings') return;
+  fbFrom=state; elPause.hidden=true; state='feedback';
+  document.body.classList.add('shopping'); $('fb').hidden=false;
+  fbView='form'; fbErr=''; fbRender(); SFX.ui();
+  if(fbS.queue.length) fbFlush().then(()=>{ if(state==='feedback'&&fbView==='form') fbRender(); });
+}
+function fbClose(){
+  if(state!=='feedback') return;
+  fbDraftKeep(); $('fb').hidden=true; state=fbFrom||'settings'; elPause.hidden=false;
+  document.body.classList.remove('shopping'); fbOptTxt(); SFX.ui();
+}
+function fbDraftKeep(){ const t=$('fbText'); if(t&&fbView==='form'){ fbS.draft.text=t.value.slice(0,FB_MAX*2); fbSave(); } }
+function fbRender(){
+  const B=$('fbBody'), go=$('fbGo'), back=$('fbBack'), d=fbS.draft;
+  if(fbView==='done'){
+    const r=fbDone||{};
+    B.innerHTML=`<div class="fbdone"><b>${r.ok?'Danke!':'Gespeichert'}</b><p class="note${r.ok?' ok':''}">${lbEsc(r.txt||'')}</p></div>`;
+    go.textContent='Fertig'; go.disabled=false; back.textContent='Noch etwas schreiben';
+    return;
+  }
+  const art=FB_ARTEN.find(x=>x[0]===d.art)||FB_ARTEN[1], n=fbLen(d.text), wq=fbS.queue.length;
+  const mitName=!!lbS.token&&!!lbS.name;
+  B.innerHTML=`<p class="note">Deine Nachricht geht direkt an den Entwickler von Orbitsprung.</p>`
+    +`<div class="seg seg4" role="tablist" aria-label="Art">${FB_ARTEN.map(x=>`<button class="tab" type="button" role="tab" data-fa="${x[0]}" aria-selected="${x[0]===art[0]}">${x[1]}</button>`).join('')}</div>`
+    +`<label>Deine Nachricht<textarea class="fld fbta" id="fbText" maxlength="${FB_MAX}" placeholder="${lbEsc(art[2])}" autocapitalize="sentences" spellcheck="true">${lbEsc(d.text||'')}</textarea></label>`
+    +`<div class="fbcnt${n>=FB_MAX?' voll':''}" id="fbCnt">${n} / ${FB_MAX}</div>`
+    +(mitName?`<button class="opt" id="fbName" type="button" role="switch" aria-checked="${d.name!==false}"><span><b>Mit meinem Namen senden</b><small>Als ${lbEsc(lbS.name)}, dann kann der Entwickler deine Runden ansehen</small></span><i aria-hidden="true"></i></button>`:'')
+    +(wq?`<p class="note">${wq===1?'1 Nachricht wartet':wq+' Nachrichten warten'} noch auf Verbindung und ${wq===1?'geht':'gehen'} automatisch raus.</p>`:'')
+    +(fbErr?`<p class="note ferr" role="alert">${lbEsc(fbErr)}</p>`:'')
+    +`<p class="note" style="font-size:11.5px">Mitgeschickt werden nur Spielversion, Android-Version, Handymodell, Bildschirmgröße und dein letzter Modus. Bitte schreib keine persönlichen Daten hinein. <a href="${LB_URL}/datenschutz" target="_blank" rel="noopener">Datenschutz</a></p>`;
+  go.textContent=fbBusy?'Sende …':'Senden'; go.disabled=fbBusy; back.textContent='Zurück';
+  const ta=$('fbText');
+  ta.addEventListener('input',()=>{ d.text=ta.value; const c=$('fbCnt'), k=fbLen(ta.value); c.textContent=k+' / '+FB_MAX; c.classList.toggle('voll',k>=FB_MAX); if(fbErr){ fbErr=''; const f=B.querySelector('.ferr'); if(f) f.remove(); } clearTimeout(fbRender.t); fbRender.t=setTimeout(fbSave,400); });
+  B.querySelectorAll('[data-fa]').forEach(b=>b.addEventListener('click',()=>{ d.text=ta.value; d.art=b.dataset.fa; fbSave(); SFX.ui(); fbRender(); }));
+  const nm=$('fbName'); if(nm) nm.addEventListener('click',()=>{ d.text=ta.value; d.name=d.name===false; fbSave(); SFX.ui(); fbRender(); });
+}
+async function fbSend(){
+  if(fbBusy) return;
+  const d=fbS.draft, ta=$('fbText'); if(ta) d.text=ta.value;
+  const text=String(d.text||'').trim();
+  if(fbLen(text)<3){ fbErr='Bitte schreib ein paar Worte.'; fbRender(); const t=$('fbText'); if(t) t.focus(); return; }
+  const e={fid:'fb'+lbRid(),art:d.art,text:[...text].slice(0,FB_MAX).join(''),version:APP_VERSION,geraet:fbGeraet(),modus:mode,geschrieben:Date.now(),
+    konto:d.name!==false&&lbS.token&&lbS.name?lbS.name:null};
+  fbS.queue.push(e); while(fbS.queue.length>FB_QMAX) fbS.queue.shift();
+  fbS.draft={art:d.art,text:'',name:d.name}; fbSave();
+  fbBusy=true; fbErr=''; fbRender(); SFX.ui();
+  const r=await fbFlush();
+  fbBusy=false;
+  const ok=!fbS.queue.some(x=>x.fid===e.fid), bad=r.bad&&r.bad[e.fid];
+  if(bad){ fbS.draft.text=e.text; fbSave(); fbErr=bad; fbView='form'; if(state==='feedback') fbRender(); return; }
+  fbDone=ok?{ok:true,txt:'Dein Feedback ist angekommen. Vielen Dank, das hilft, Orbitsprung besser zu machen.'}
+    :{ok:false,txt:r.alt?'Der Server nimmt noch kein Feedback an. Deine Nachricht bleibt auf dem Handy und geht automatisch raus, sobald es klappt.'
+      :r.voll?'Gerade kommen sehr viele Nachrichten an. Deine bleibt auf dem Handy und geht später automatisch raus.'
+      :'Gerade keine Verbindung. Deine Nachricht bleibt auf dem Handy und geht automatisch raus, sobald du wieder online bist.'};
+  fbView='done'; fbOptTxt(); if(state==='feedback') fbRender();
+}
+// Warteschlange übertragen. Ergebnis: {gesendet, bad:{fid:Fehlertext}, alt (Server kennt Feedback nicht), voll (429), netz}
+function fbFlush(){
+  if(fbFlushing) return fbFlushing;
+  fbFlushing=(async()=>{
+    const r={gesendet:0,bad:{}};
+    for(const e of fbS.queue.slice()){
+      const mitKonto=!!e.konto&&!!lbS.token&&lbS.name===e.konto;
+      const body={fid:e.fid,art:e.art,text:e.text,version:e.version,geraet:e.geraet,modus:e.modus,geschrieben:e.geschrieben};
+      if(TEST_BUILD) body.test=true;
+      let x; try{ x=await lbCall('POST','/v1/feedback',body,mitKonto); }catch(err){ r.netz=true; break; }
+      if(x.status===200||x.status===201){ r.gesendet++; fbS.queue=fbS.queue.filter(q=>q.fid!==e.fid); }
+      else if(x.status===400||x.status===413){ r.bad[e.fid]=x.j.fehler||'Die Nachricht wurde abgelehnt.'; fbS.queue=fbS.queue.filter(q=>q.fid!==e.fid); }
+      else if(x.status===403){ r.bad[e.fid]=x.j.fehler||'Abgelehnt.'; fbS.queue=fbS.queue.filter(q=>q.fid!==e.fid); }
+      else if(x.status===404){ r.alt=true; break; }
+      else if(x.status===429){ r.voll=true; break; }
+      else { r.netz=true; break; }
+    }
+    fbS.last=Date.now(); fbSave(); fbOptTxt();
+    return r;
+  })().finally(()=>{ fbFlushing=null; });
+  return fbFlushing;
+}
+$('optFb').addEventListener('click',fbOpen);
+$('fbBack').addEventListener('click',()=>{ if(fbView==='done'){ fbView='form'; fbErr=''; SFX.ui(); fbRender(); const t=$('fbText'); if(t) t.focus(); } else fbClose(); });
+$('fbGo').addEventListener('click',()=>{ if(fbView==='done') fbClose(); else fbSend(); });
+// Nachreichen: kurz nach dem Start, wenn das Netz zurückkommt, und alle 2 Minuten, solange etwas wartet (nie während einer Runde)
+const fbIdle=()=>state!=='play'&&state!=='pause';
+setTimeout(()=>{ if(fbS.queue.length&&fbIdle()) fbFlush(); },2500);
+window.addEventListener('online',()=>{ if(fbS.queue.length) setTimeout(()=>{ if(fbIdle()) fbFlush(); },1500); });
+setInterval(()=>{ if(fbS.queue.length&&document.visibilityState==='visible'&&fbIdle()) fbFlush(); },120e3);
+
 const MOCK_KEY='orbitsprung.mock';
 const MOCK_BOTS=['Nebelfalke','Komet42','Sternstaub7','Orbitfuchs','Lunatic','Quasarine','Raketen_Rudi','Polarlicht','Gravitas','Saturnella','Kosmo','Nova_Nina','Pulsar99','Meteora','Andromedar','Zwergstern','Sonnenwind','Taumler','Perihel','Apogee','Mira_B','Kuiper','Ekliptik','Kometin'];
 const MOCK_BASE={klassik:9000,sprint:4500,chaos:12000,feld:14000,hyper:18000,daily:7000};
@@ -5613,6 +5878,30 @@ function mockList(modus,z){
   rows.sort((a,b)=>b.punkte-a.punkte||a.at-b.at);
   return rows;
 }
+// Tagessieger im Schein-Server: Tag endet um Mitternacht Ortszeit, Abschluss 30 Minuten später, Beispielspieler zählen mit
+const mockTsZu=()=>{ const d=new Date(Date.now()-30*60e3); return lbDayAdd(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'),-1); };
+const mockDayNrL=t=>Math.round(Date.parse(t+'T12:00:00Z')/864e5);
+const mockTsStaub=n=>Math.min(5000,1500+500*Math.max(0,n-1));
+function mockTs(){ const D=mockDb; if(!D.ts) D.ts={tage:{}}; return D.ts; }
+function mockTsClose(){
+  const T=mockTs(), L=mockTsZu(), ks=Object.keys(T.tage).sort();
+  let t=ks.length?lbDayAdd(ks[ks.length-1],1):L, n=0;
+  while(mockDayNrL(t)<=mockDayNrL(L)&&n++<400){
+    if(!T.tage[t]){
+      const w=mockList('daily','d'+t)[0], v=T.tage[lbDayAdd(t,-1)];
+      const serie=w?(v&&v.name===w.name&&v.kid===w.kid?v.serie+1:1):0;
+      T.tage[t]=w?{kid:w.kid,name:w.name,punkte:w.punkte,serie,staub:mockTsStaub(serie),ab:null}:{kid:null,serie:0,staub:0};
+    }
+    t=lbDayAdd(t,1);
+  }
+}
+function mockTsListe(tag,k){
+  mockTsClose(); const T=mockTs();
+  if(mockDayNrL(tag)<=mockDayNrL(mockTsZu())){ const e=T.tage[tag]; return {zu:true,sieger:e&&e.name?{name:e.name,punkte:e.punkte,serie:e.serie,staub:e.staub}:null}; }
+  const w=mockList('daily','d'+tag)[0], v=T.tage[lbDayAdd(tag,-1)], serie=w&&v&&v.name===w.name&&v.kid===w.kid?v.serie+1:1;
+  const nxt=lbDayAdd(tag,1).split('-').map(Number), ab=new Date(nxt[0],nxt[1]-1,nxt[2]).getTime()+30*60e3;
+  return {zu:false,staub:mockTsStaub(serie),serie,fuehrt:w?w.name:null,abschluss:ab,titelverteidiger:v&&v.name?{name:v.name,serie:v.serie}:null};
+}
 function mockRoute(method,path,body,tok){
   mockLoad(); const D=mockDb, now=Date.now();
   const R=(status,j)=>({status,j});
@@ -5654,7 +5943,17 @@ function mockRoute(method,path,body,tok){
     if(ich&&fr){ const i=rows.findIndex(r=>r.kid===k.id); ich=Object.assign({},ich,{platz:i+1,von:rows.length}); }
     const um=Math.max(0,Math.min(20,parseInt(url.searchParams.get('um')||'0',10)||0));
     const umfeld=um&&ich?rows.map((r,i)=>({platz:i+1,name:r.name,punkte:r.punkte,planeten:r.planeten,offline:r.offline,ich:!!(k&&r.kid===k.id)})).slice(Math.max(0,ich.platz-1-um),ich.platz+um):undefined;
-    return R(200,{modus,zeitraum:modus==='daily'?'tag':z==='all'?'all':'woche',schluessel:z,eintraege,umfeld,gesamt:rows.length,ich:ich?Object.assign({name:k.name},ich):null,stand:now});
+    return R(200,{modus,zeitraum:modus==='daily'?'tag':z==='all'?'all':'woche',schluessel:z,eintraege,umfeld,gesamt:rows.length,ich:ich?Object.assign({name:k.name},ich):null,stand:now,tagessieger:modus==='daily'?mockTsListe(tag,k):undefined});
+  }
+  if(method==='POST'&&p==='/v1/feedback'){
+    const ko=auth(); D.fb=D.fb||[];
+    if(lbS.mockFbAus) return R(404,{fehler:'Nicht gefunden.'});
+    if(typeof body.fid!=='string'||!/^[A-Za-z0-9_-]{8,64}$/.test(body.fid)) return R(400,{fehler:'Ungültige Feedback-ID.'});
+    if(!['fehler','idee','lob','sonst'].includes(body.art)) return R(400,{fehler:'Unbekannte Art.'});
+    const t=String(body.text||'').trim(); if([...t].length<3) return R(400,{fehler:'Bitte schreib ein paar Worte.'}); if([...t].length>2050) return R(400,{fehler:'Höchstens 2000 Zeichen.'});
+    const da=D.fb.find(f=>f.fid===body.fid); if(da) return R(200,{ok:true,nr:da.nr,doppelt:true});
+    const nr=D.fb.length+1; D.fb.push({nr,fid:body.fid,konto:ko?ko.name:null,art:body.art,text:t,version:body.version,geraet:body.geraet,modus:body.modus,test:body.test===true,t:now}); mockSave();
+    return R(201,{ok:true,nr});
   }
   const k=auth();
   if(!k) return R(401,{fehler:'Anmeldung abgelaufen. Bitte neu anmelden.'});
@@ -5683,8 +5982,27 @@ function mockRoute(method,path,body,tok){
       return R(200,{ok:true,konto:k.id,bereich:ber,rev:ist+1,epoche:nep,geaendert:now});
     }
   }
+  if(method==='GET'&&p==='/v1/belohnungen'){
+    mockTsClose(); const T=mockTs(), offen=[];
+    for(const t of Object.keys(T.tage).sort().reverse()){ const e=T.tage[t]; if(e.kid===k.id&&!e.ab) offen.push({tag:t,punkte:e.punkte,serie:e.serie,staub:e.staub,spieler:0}); }
+    const l=T.tage[mockTsZu()]; mockSave();
+    return R(200,{offen,serie:l&&l.kid===k.id?l.serie:0,regeln:{basis:1500,plus:500,max:5000,zone:'Ortszeit'},stand:now});
+  }
+  if(method==='POST'&&p==='/v1/belohnungen/abholen'){
+    const T=mockTs(), tage=Array.isArray(body.tage)?body.tage:[]; if(!tage.length) return R(400,{fehler:'Keine Tage angegeben.'});
+    const out=[]; for(const t of tage){ const e=T.tage[t]; if(!e||e.kid!==k.id) continue; out.push({tag:t,staub:e.staub,serie:e.serie,schon:!!e.ab}); if(!e.ab) e.ab=now; }
+    mockSave(); return R(200,{abgeholt:out});
+  }
+  // Nur Schein-Server: du hast die letzten drei abgeschlossenen Tage gewonnen (Serie 1, 2, 3)
+  if(method==='POST'&&p==='/v1/_test/tagessieg'){
+    mockTsClose(); const T=mockTs(), L=mockTsZu(), tage=[lbDayAdd(L,-2),lbDayAdd(L,-1),L];
+    const v=T.tage[lbDayAdd(L,-3)]; let s=v&&v.kid===k.id?v.serie:0;
+    for(const t of tage){ s++; T.tage[t]={kid:k.id,name:k.name,punkte:9000+s,serie:s,staub:mockTsStaub(s),ab:null}; }
+    mockSave(); return R(200,{ok:true,tage,staub:tage.reduce((a,t)=>a+T.tage[t].staub,0)});
+  }
   if(method==='POST'&&p==='/v1/abmelden'){ delete D.sitz[tok]; mockSave(); return R(200,{ok:true}); }
   if(method==='GET'&&p==='/v1/konto') return R(200,{name:k.name,erstellt:k.erstellt});
+  if(method==='GET'&&p==='/v1/konto/daten') mockFbDaten=(D.fb||[]).filter(f=>f.konto===k.name).map(f=>({art:{fehler:'Fehler',idee:'Idee',lob:'Lob',sonst:'Sonstiges'}[f.art],text:f.text,version:f.version,geraet:f.geraet,modus:f.modus,erstellt:new Date(f.t).toISOString()}));
   if(method==='PATCH'&&p==='/v1/konto'){
     if(!nameOk(body.name)) return R(400,{fehler:'Name: 3 bis 16 Zeichen, nur Buchstaben, Ziffern, _ und -.'});
     if(lbNorm(body.name)!==lbNorm(k.name)){
@@ -5700,6 +6018,7 @@ function mockRoute(method,path,body,tok){
     if(D.fr){ const me='k'+k.id; for(const id of (D.fr.f[me]||[])) D.fr.f[id]=(D.fr.f[id]||[]).filter(x=>x!==me); delete D.fr.f[me]; D.fr.req=D.fr.req.filter(r=>r.von!==me&&r.an!==me); }
     for(const t in D.sitz) if(D.sitz[t]===k.id) delete D.sitz[t];
     if(D.fs) for(const f in D.fs) if(f.startsWith(k.id+'|')) delete D.fs[f];
+    if(D.ts) for(const t in D.ts.tage) if(D.ts.tage[t].kid===k.id){ D.ts.tage[t].kid=null; D.ts.tage[t].name=null; }
     for(const b in D.best) if(b.startsWith(k.id+'|')) delete D.best[b];
     for(const r in D.runden) if(D.runden[r].kid===k.id) delete D.runden[r];
     mockSave(); return R(200,{ok:true});
@@ -5723,6 +6042,7 @@ function mockRoute(method,path,body,tok){
         if(t.used){ const v=Object.values(D.runden).filter(r=>r.ticket===e.ticket).sort((a,b)=>b.at-a.at)[0]; if(!(v&&e.punkte>=v.punkte&&e.dauer>=v.dauer)){ out.push({rid:e.rid,ok:false,grund:'Ticket wurde schon benutzt.'}); continue; } }
       }
       const err=mockCheck(e,t); if(err){ out.push({rid:e.rid,ok:false,grund:err}); continue; }
+      if(e.modus==='daily'&&mockDayNrL(e.tag)<=mockDayNrL(mockTsZu())){ out.push({rid:e.rid,ok:false,grund:`Der Tagesflug vom ${tsDe(e.tag)} ist schon abgeschlossen.`}); continue; }
       if(t) t.used=true;
       D.runden[e.rid]={rid:e.rid,kid:k.id,modus:e.modus,tag:e.tag,punkte:e.punkte,planeten:e.planeten,dauer:e.dauer,ticket:t?e.ticket:null,offline:!t,version:e.version,at:now};
       const pl={};
