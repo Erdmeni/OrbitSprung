@@ -104,8 +104,8 @@ try {
   await page.click('#setBtn');
   await expectVisible(page, '#pause', 'Einstellungen');
   // Alle sichtbaren Schalter und Lautstärke-Knöpfe zweimal antippen (an/aus bzw. stumm/zurück)
-  // „Konto und Bestenliste“ öffnet einen eigenen Bildschirm und wird unten extra geprüft
-  const sw = page.locator('#pause .opt:visible:not(#optAcct), #pause .vbtn:visible');
+  // „Konto und Bestenliste“ und „Feedback senden“ öffnen eigene Bildschirme und werden unten extra geprüft
+  const sw = page.locator('#pause .opt:visible:not(#optAcct):not(#optFb), #pause .vbtn:visible');
   const ns = await sw.count();
   if (!ns) problems.push('Einstellungen: keine Schalter gefunden');
   for (let i = 0; i < ns; i++) { await sw.nth(i).click(); await sw.nth(i).click(); }
@@ -118,6 +118,12 @@ try {
   await page.click('#acctBack');
   await expectVisible(page, '#pause', 'Zurück aus dem Konto');
   step('Konto-Bildschirm geöffnet und geschlossen (ohne Netz)');
+  // Feedback: Karte öffnen, Zurück führt in die Einstellungen
+  await page.click('#optFb');
+  await expectVisible(page, '#fb', 'Feedback-Bildschirm');
+  await page.click('#fbBack');
+  await expectVisible(page, '#pause', 'Zurück aus dem Feedback');
+  step('Feedback-Bildschirm geöffnet und geschlossen');
   await page.click('#setDone');
   await expectVisible(page, '#menu', 'Einstellungen schließen');
 
