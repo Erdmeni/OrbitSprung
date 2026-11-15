@@ -114,6 +114,8 @@ button:focus-visible{outline:2px solid var(--comet);outline-offset:3px}
 .btns{display:flex;gap:8px;position:sticky;bottom:calc(-1*var(--cy));margin:0 calc(-1*var(--cx)) calc(-1*var(--cy));padding:8px var(--cx) var(--cy);background:linear-gradient(to bottom,rgba(7,18,25,0),rgba(7,18,25,.94) 14px);z-index:1}
 .go{flex:1;min-height:44px;font:800 13px var(--display);letter-spacing:.04em;background:var(--comet);color:#1b1206;border:0;border-radius:12px;padding:10px 14px;cursor:pointer;transition:transform .08s,filter .08s}
 .go.alt{flex:0 0 auto;padding-inline:13px;background:rgba(7,18,25,.6);color:var(--dust);border:1px solid var(--line)}
+/* Endkarte: „Hauptmenü“ ist breiter als früher „Modus“, auf sehr schmalen Handys passen die drei Knöpfe nur etwas kompakter */
+@media (max-width:359px){#over .btns{gap:6px}#over .btns .go{padding-inline:9px;font-size:12px;letter-spacing:.02em}}
 .go:active{transform:scale(.97);filter:brightness(.92)}
 .go.warn{color:var(--flare);border-color:rgba(255,111,89,.45)}
 .keys{font-size:12px;color:var(--muted);text-align:center}
@@ -487,9 +489,64 @@ body.shopping .mid{padding-block:0}
 /* Hauptmenü: Kopfzeile mit Regeln-Knopf, Modi als Chips (Beschreibung darunter), großer Starten-Knopf, vier beschriftete Kacheln */
 .mleft{display:contents}
 .mtop{display:flex;align-items:center;gap:10px}
+/* Werkstatt (1.6.4): Hüllen im Hochformat unsichtbar; Kategorien behalten ihren Abstand zu den Bereichen */
+.shside,.shmain,.shsub{display:contents}
+.shsub>.sub{margin-top:-4px}
+/* Querformat: links Titel, Bereiche und Zurück, rechts Kategorien und die Liste über die ganze Höhe */
+@media (max-height:540px) and (min-width:600px){
+  .ui:has(#shop:not([hidden])) .hint{display:none}
+  .shop{max-width:900px;display:grid;grid-template-columns:clamp(150px,22%,190px) minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;column-gap:16px;row-gap:10px;--cx:14px;--cy:12px;padding-bottom:var(--cy)}
+  .shop>.shside{grid-column:1;grid-row:1;display:flex;flex-direction:column;gap:10px;min-height:0}
+  .shop>.shmain{grid-column:2;grid-row:1/span 2;display:flex;flex-direction:column;gap:8px;min-height:0;margin-bottom:calc(-1*var(--cy));border-left:1px solid var(--line);padding-left:14px}
+  .shop>.btns{grid-column:1;grid-row:2;flex-direction:column;align-items:stretch;gap:8px;margin:0;padding:0;border-top:0}
+  .shop .btns .go{width:100%;min-height:42px;padding:8px 12px}
+  .shop .btns .note{font-size:11px;line-height:1.35}
+  .shop .shop-head{flex-direction:column;align-items:flex-start;gap:8px}
+  .shop .shop-head h1{font-size:19px}
+  .shop .seg{grid-template-columns:1fr}
+  .shop .seg .tab{min-height:36px;text-align:left;padding:6px 12px}
+  .shop .shsub{display:block;flex:0 0 auto}
+  .shsub>.sub{margin-top:0;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:5px}
+  .shop .sub .tab{min-height:28px;padding:2px 1px}
+  .shop .scroll{margin-inline:0 calc(-1*var(--cx));padding:2px var(--cx) var(--cy) 0}
+}
+@media (max-height:540px) and (min-width:820px){.shsub>.sub{grid-template-columns:repeat(7,minmax(0,1fr))}}
+
+/* Sichtbare Scrollleiste (1.6.4): eigene Leiste, weil Android sie sonst nur beim Wischen kurz zeigt */
+.card,.shop .scroll,.cbox,.updnotes,.fbal{scrollbar-width:none}
+.card::-webkit-scrollbar,.shop .scroll::-webkit-scrollbar,.cbox::-webkit-scrollbar,.updnotes::-webkit-scrollbar,.fbal::-webkit-scrollbar{display:none}
+#sbars{position:fixed;inset:0;pointer-events:none;z-index:9}
+.sbar{position:fixed;width:5px;border-radius:3px;background:rgba(234,244,242,.12);transition:opacity .25s}
+.sbar[hidden]{display:none}
+.sthumb{position:absolute;left:0;right:0;border-radius:3px;background:rgba(234,244,242,.5);pointer-events:auto;touch-action:none;transition:background .3s}
+.sthumb::before{content:"";position:absolute;inset:-6px -12px}
+.sbar.neu .sthumb{background:var(--comet);animation:sbPuls 1.2s ease-in-out 2}
+.sbar.zieh .sthumb{background:var(--comet)}
+@keyframes sbPuls{50%{transform:scaleX(1.6)}}
+@media (prefers-reduced-motion:reduce){.sbar.neu .sthumb{animation:none}}
+.ibtn.hlp.fbb svg{width:20px;height:20px}
+.opt.fbopt{border-color:rgba(95,227,208,.55);background:linear-gradient(135deg,rgba(95,227,208,.13),rgba(95,227,208,.03)),var(--tile)}
+.opt.fbopt b{color:#7ff0de}
+
 .mtop h1{flex:1;min-width:0}
 .ibtn.hlp{width:40px;height:40px}
 .ibtn.hlp svg{width:19px;height:19px}
+/* Profil-Knopf in der Kopfzeile des Hauptmenüs: Name (angemeldet) oder „Profil“ */
+.mtop h1{flex:1 0 auto}
+.prof{pointer-events:auto;flex:0 1 auto;min-width:0;height:40px;display:flex;align-items:center;gap:7px;padding:0 13px 0 10px;color:var(--ink);background:rgba(7,18,25,.55);border:1px solid var(--line);border-radius:999px;font:700 12px var(--body);cursor:pointer}
+.prof svg{width:19px;height:19px;flex:0 0 auto}
+.prof .pn{min-width:0;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.prof.on{border-color:rgba(255,190,92,.55)}
+.prof.on svg{color:var(--comet)}
+.prof:active{background:rgba(234,244,242,.16);transform:scale(.96)}
+@media (max-width:370px){.prof{padding:0 11px 0 9px;gap:6px}.prof .pn{max-width:74px}}
+/* Sehr schmale Handys: nur das Symbol, damit der Titel Platz hat */
+@media (max-width:340px){.prof{width:40px;padding:0;justify-content:center}.prof .pn{display:none}}
+/* Kopfzeile mit Feedback, Profil und „?“: etwas enger. Passt „Profil“ bzw. der Name nicht, zeigt der Knopf nur das Symbol (Klasse .ico, setzt profFit) */
+#menu .mtop{gap:8px}
+.prof.ico{flex:0 0 auto;width:40px;padding:0;justify-content:center}
+.prof.ico .pn{display:none}
+@media (max-width:340px){#menu .mtop{gap:6px}#menu .mtop h1{font-size:20px}#menu .ibtn.hlp,.prof,.prof.ico{width:34px;height:34px}}
 #menu .modes{display:flex;flex-wrap:wrap;gap:6px}
 #menu .mode{flex:0 0 auto;flex-direction:row;align-items:center;gap:6px;min-height:38px;padding:6px 12px;border-radius:999px}
 #menu .mode b{font-size:11.5px}
@@ -535,6 +592,8 @@ body.shopping .mid{padding-block:0}
   #menu .mdesc{font-size:12px!important;line-height:1.35}
   .mtop h1{font-size:20px!important}
   .ibtn.hlp{width:34px;height:34px}
+  .prof{height:34px}
+  .prof.ico{width:34px}
   #menu .ver{font-size:10px;letter-spacing:.03em;line-height:1.25}
   .go.big{min-height:46px}
   .mtile{min-height:40px}
@@ -561,7 +620,7 @@ body.shopping .mid{padding-block:0}
 <div class="ui">
   <div class="mid">
     <div class="card" id="menu">
-      <div class="mleft"><div class="mtop"><h1>Orbit<span>sprung</span></h1><button class="ibtn hlp" id="rulesBtn" type="button" aria-label="Regeln und Himmelskörper"><svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="10" cy="10" r="7.5"/><path d="M7.8 8a2.3 2.3 0 1 1 3.2 2.1c-.7.3-1 .8-1 1.5v.4"/><circle cx="10" cy="14.6" r=".6" fill="currentColor"/></svg></button></div>
+      <div class="mleft"><div class="mtop"><h1>Orbit<span>sprung</span></h1><button class="ibtn hlp fbb" id="fbBtn" type="button" aria-label="Feedback senden"><svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M4 4.5h12a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H9l-3.5 3v-3H4A1.5 1.5 0 0 1 2.5 13V6A1.5 1.5 0 0 1 4 4.5z"/><path d="M6.5 8.5h7M6.5 11h4.5"/></svg></button><button class="prof" id="profFromMenu" type="button" aria-label="Profil"><svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="10" cy="7" r="3.4"/><path d="M3.8 17.2c.8-3.3 3.3-5.1 6.2-5.1s5.4 1.8 6.2 5.1"/></svg><span class="pn" id="profName">Profil</span></button><button class="ibtn hlp" id="rulesBtn" type="button" aria-label="Regeln und Himmelskörper"><svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="10" cy="10" r="7.5"/><path d="M7.8 8a2.3 2.3 0 1 1 3.2 2.1c-.7.3-1 .8-1 1.5v.4"/><circle cx="10" cy="14.6" r=".6" fill="currentColor"/></svg></button></div>
       <div class="modes" role="radiogroup" aria-label="Spielmodus">
         <button class="mode" type="button" role="radio" data-mode="klassik" id="mode-klassik"><b>Klassisch</b><span>Ein Leben</span></button>
         <button class="mode" type="button" role="radio" data-mode="sprint" id="mode-sprint"><b>Sprint</b><span>60 Sekunden</span></button>
@@ -576,7 +635,7 @@ body.shopping .mid{padding-block:0}
       <button class="fnews" id="fNews" type="button" hidden><b></b><small></small></button>
       <button class="fnews fbnote" id="fbNote" type="button" hidden><b></b><small></small></button>
       <div class="keys">Leertaste, Pfeil hoch oder Tippen</div>
-      <div class="ver" id="ver">Orbitsprung 1.6.3</div>
+      <div class="ver" id="ver">Orbitsprung 1.6.4</div>
       </div>
       <div class="mact">
         <button class="go big" id="start" type="button">Starten</button>
@@ -656,7 +715,7 @@ body.shopping .mid{padding-block:0}
       <div class="keys">oder Leertaste</div>
       <div class="btns">
         <button class="go" id="again" type="button">Nochmal</button>
-        <button class="go alt" id="toMenu" type="button">Modus</button>
+        <button class="go alt" id="toMenu" type="button">Hauptmenü</button>
         <button class="go alt" id="shopFromOver" type="button">Shop</button>
       </div>
     </div>
@@ -670,6 +729,7 @@ body.shopping .mid{padding-block:0}
         <div><span class="lbl">Sektor</span><strong id="pSector">1</strong></div>
       </div>
       <div class="opts">
+        <button class="opt fbopt" id="optFb" type="button"><span><b>Feedback senden</b><small id="optFbTxt">Fehler, Ideen oder Lob direkt an den Entwickler</small></span></button>
         <div class="optv"><span><b id="lblSnd">Ton</b><small>Soundeffekte und Fahrtwind</small></span><button class="vbtn" id="vbSnd" type="button">100 %</button><input class="rng" id="rngSnd" type="range" min="0" max="100" step="5" value="100" aria-labelledby="lblSnd"></div>
         <div class="optv"><span><b id="lblMus">Musik</b><small>Soundtrack passend zu deinen Skins</small></span><button class="vbtn" id="vbMus" type="button">100 %</button><input class="rng" id="rngMus" type="range" min="0" max="100" step="5" value="100" aria-labelledby="lblMus"></div>
         <button class="opt" id="optVib" type="button" role="switch" aria-checked="true"><span><b>Vibration</b><small>Kurzes Ruckeln bei Absprung, Landung und Aufprall</small></span><i aria-hidden="true"></i></button>
@@ -679,7 +739,6 @@ body.shopping .mid{padding-block:0}
         <button class="opt" id="optTut" type="button"><span><b>Einführung wiederholen</b><small id="optTutTxt">Zeigt die kurze Anleitung in der nächsten Runde noch einmal</small></span></button>
         <button class="opt" id="optAcct" type="button"><span><b>Konto und Bestenliste</b><small id="optAcctTxt">Nicht angemeldet</small></span></button>
         <button class="opt" id="optUpd" type="button"><span><b>Nach Updates suchen</b><small id="optUpdTxt">Version</small></span></button>
-        <button class="opt" id="optFb" type="button"><span><b>Feedback senden</b><small id="optFbTxt">Fehler, Ideen oder Lob direkt an den Entwickler</small></span></button>
         <button class="opt" id="optTest" type="button" role="switch" aria-checked="false" hidden><span><b>Kauf testen</b><small>Nur Testversion: sperrt Skins, Entdeckungen, Upgrades und Kaufmodi wieder. Staub bleibt.</small></span><i aria-hidden="true"></i></button>
       </div>
       <div class="ver" id="gfxInfo"></div>
@@ -735,14 +794,19 @@ body.shopping .mid{padding-block:0}
     </div>
 
     <div class="card shop" id="shop" hidden>
+      <div class="shside">
       <div class="shop-head">
         <h1>Werk<span>statt</span></h1>
         <div class="wallet"><i>✦</i><span id="shopStaub">0</span></div>
       </div>
       <div class="tabs" role="tablist" id="tabs"></div>
+      </div>
+      <div class="shmain">
+      <div class="shsub" id="shopSub"></div>
       <div class="scroll" id="shopScroll">
         <div class="grid" id="grid"></div>
         <p class="note" id="syncNote">Fortschritt wird nur auf diesem Gerät gespeichert.</p>
+      </div>
       </div>
       <div class="conf" id="conf" role="dialog" aria-modal="true" aria-labelledby="confName" hidden>
         <div class="cbox">
@@ -1458,7 +1522,7 @@ if(!save.sk) save.sk={}; if(!save.own) save.own={};
 for(const k in SKINSETS){ if(!save.sk[k]) save.sk[k]=SKINSETS[k].items[0].id; if(!save.own[k]) save.own[k]=[SKINSETS[k].items[0].id]; }
 const skinOf=k=>SKINSETS[k].items.find(i=>i.id===save.sk[k])||SKINSETS[k].items[0];
 // Spielversion: muss zum Menütext #ver passen. Die GitHub Action nimmt sie als Release-Tag v<APP_VERSION>
-const APP_VERSION='1.6.3';
+const APP_VERSION='1.6.4';
 // Nur in der Test-Artefakt-Version true: alle Skins, Spielmodi und Entdeckungen gehören dir, dazu viel Staub für Upgrades
 const TEST_BUILD=false;
 function testUnlock(){
@@ -3772,7 +3836,7 @@ function closeShop(){
   if(state==='menu') elMenu.hidden=false; else if(state==='over') elOver.hidden=false;
 }
 function renderShop(){
-  const tabs=$('tabs'); tabs.innerHTML='';
+  const tabs=$('tabs'); tabs.innerHTML=''; const shSub=$('shopSub'); shSub.innerHTML='';
   const skins=tab!=='up'&&tab!=='disc';
   const mkTab=(id,label,sel,title)=>{
     const b=document.createElement('button'); b.type='button'; b.className='tab'; b.id='tab-'+id; b.setAttribute('role','tab');
@@ -3784,9 +3848,9 @@ function renderShop(){
   for(const [id,label] of SEGS) seg.appendChild(mkTab(id,label,id==='skins'?skins:tab===id));
   tabs.appendChild(seg);
   if(skins){
-    const sub=document.createElement('div'); sub.className='sub';
+    const sub=document.createElement('div'); sub.className='sub'; sub.setAttribute('role','tablist'); sub.setAttribute('aria-label','Kategorien');
     for(const [id,label,full] of SKINTABS) sub.appendChild(mkTab(id,label,tab===id,full));
-    tabs.appendChild(sub);
+    shSub.appendChild(sub);
   }
   if(tab==='up'||tab==='disc'){ renderExtras(); return; }
   const {list,owned,cur}=shopList();
@@ -3972,7 +4036,7 @@ function confRender(){
 function openConf(o){
   conf=o; MUS.preview=null; confRender();
   $('conf').hidden=false;
-  for(const id of ['tabs','shopScroll']) $(id).inert=true; $('shopBack').inert=true;
+  for(const id of ['tabs','shopSub','shopScroll']) $(id).inert=true; $('shopBack').inert=true;
   SFX.ui(); drawPreviews();
   const y=$('confYes'); (y.disabled?$('confNo'):y).focus({preventScroll:true});
 }
@@ -3980,7 +4044,7 @@ function closeConf(restore=true){
   if(!conf) return;
   const o=conf; conf=null; musicPreview(null);
   $('conf').hidden=true;
-  for(const id of ['tabs','shopScroll']) $(id).inert=false; $('shopBack').inert=false;
+  for(const id of ['tabs','shopSub','shopScroll']) $(id).inert=false; $('shopBack').inert=false;
   if(restore){ const b=$(o.btnId); if(b) b.focus({preventScroll:true}); }
 }
 function musicPreview(p){
@@ -4581,7 +4645,7 @@ const LB_SHORT={klassik:'Klassisch',sprint:'Sprint',chaos:'Chaos',feld:'Feld',hy
 let lbS={}; try{ lbS=JSON.parse(localStorage.getItem(LB_KEY)||'{}')||{}; }catch(e){ lbS={}; }
 if(!Array.isArray(lbS.queue)) lbS.queue=[]; if(!lbS.sent||typeof lbS.sent!=='object') lbS.sent={}; if(!lbS.cache||typeof lbS.cache!=='object') lbS.cache={};
 if(TEST_BUILD&&lbS.srv!=='echt') lbS.srv='schein';
-function lbSave(){ try{ localStorage.setItem(LB_KEY,JSON.stringify(lbS)); }catch(e){} }
+function lbSave(){ try{ localStorage.setItem(LB_KEY,JSON.stringify(lbS)); }catch(e){} if(typeof profUpd==='function') profUpd(); }
 let lbNet='?', lbBusy=false, lbFail=0, lbNextTry=0, lbTimer=0, lbRun=null, lbAnon=null, lbOverRid=null, lbRes={};
 const lbNorm=n=>String(n||'').normalize('NFC').toLowerCase();
 const lbEsc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -4905,6 +4969,13 @@ function lbRenderNote(){
   n.textContent=t;
 }
 $('lbFromMenu').addEventListener('click',()=>lbOpen());
+function profUpd(){ const b=$('profFromMenu'); if(!b) return; const on=!!(lbS.token&&lbS.name); const t=on?lbS.name:'Profil';
+  if($('profName').textContent!==t) $('profName').textContent=t; b.classList.toggle('on',on); b.setAttribute('aria-label',on?'Profil von '+lbS.name:'Profil, nicht angemeldet'); profFit(); }
+function profFit(){ const b=$('profFromMenu'), n=$('profName'); if(!b||!b.offsetParent) return;
+  b.classList.remove('ico'); if(n.clientWidth<Math.min(n.scrollWidth,40)) b.classList.add('ico'); }
+if(window.ResizeObserver) new ResizeObserver(()=>profFit()).observe(document.querySelector('#menu .mtop')); else addEventListener('resize',profFit);
+$('profFromMenu').addEventListener('click',()=>acctOpen());
+profUpd();
 $('lbBack').addEventListener('click',lbClose);
 $('lbAcct').addEventListener('click',()=>acctOpen());
 $('lbZa').addEventListener('click',()=>{ const z=lbView.modus==='daily'?'heute':'all'; if(lbView.zr!==z){ lbView.zr=z; SFX.ui(); lbRender(); lbLoad(); } });
@@ -5738,6 +5809,65 @@ document.addEventListener('visibilitychange',()=>{ if(!lbS.token) return; if(doc
 window.addEventListener('online',()=>progSync(true));
 var progReady=true;
 
+// ---------- Sichtbare Scrollleisten ----------
+// Android zeigt die Scrollleiste nur kurz beim Wischen. Deshalb zeichnet das Spiel überall, wo sich etwas scrollen
+// lässt, eine eigene dünne Leiste an den rechten Rand. Sie leuchtet beim ersten Erscheinen kurz auf und lässt sich
+// auch ziehen. Gefunden wird alles mit overflow-y auto/scroll, auch Listen, die später dazukommen.
+const SB={wrap:null,list:[],bars:new Map(),scanT:0,drag:null};
+function sbScan(){
+  SB.list=[]; for(const el of document.querySelectorAll('.card,.card *,.updlay *,.cbox')){
+    if(el.closest('svg')||el.tagName==='CANVAS') continue;
+    const o=getComputedStyle(el).overflowY; if(o==='auto'||o==='scroll') SB.list.push(el);
+  }
+  for(const [el,b] of SB.bars) if(!SB.list.includes(el)){ b.remove(); SB.bars.delete(el); }
+}
+function sbBar(el){
+  let b=SB.bars.get(el); if(b) return b;
+  b=document.createElement('div'); b.className='sbar'; b.hidden=true; b.innerHTML='<div class="sthumb"></div>';
+  const t=b.firstChild;
+  t.addEventListener('pointerdown',e=>{ e.preventDefault(); e.stopPropagation(); try{ t.setPointerCapture(e.pointerId); }catch(_){}
+    SB.drag={el,y:e.clientY,top:el.scrollTop,f:b._f||1}; b.classList.add('zieh'); });
+  t.addEventListener('pointermove',e=>{ if(!SB.drag||SB.drag.el!==el) return; el.scrollTop=SB.drag.top+(e.clientY-SB.drag.y)*SB.drag.f; sbUpd(); });
+  const ende=()=>{ if(SB.drag&&SB.drag.el===el){ SB.drag=null; b.classList.remove('zieh'); } };
+  t.addEventListener('pointerup',ende); t.addEventListener('pointercancel',ende);
+  SB.wrap.appendChild(b); SB.bars.set(el,b); return b;
+}
+// Unterer Rand der Leiste: über einer klebenden Knopfleiste (z. B. „Fertig“) enden statt darunter
+function sbUnten(el,r,rand){
+  let u=r.bottom-rand;
+  for(const c of el.children){ if(c.hidden||c.classList.contains('sbar')) continue; const cs=getComputedStyle(c);
+    if(cs.position==='sticky'&&cs.bottom!=='auto'){ const cr=c.getBoundingClientRect(); if(cr.height&&cr.top>r.top+r.height*.4) u=Math.min(u,cr.top-2); } }
+  return u;
+}
+function sbUpd(){
+  if(!SB.wrap) return;
+  const aus=state==='play';
+  for(const el of SB.list){
+    const max=el.scrollHeight-el.clientHeight; let b=SB.bars.get(el);
+    if(aus||max<=2||!el.getClientRects().length){ if(b&&!b.hidden){ b.hidden=true; b._neu=false; } continue; }
+    const r=el.getBoundingClientRect(); if(r.height<12||r.bottom<0||r.top>innerHeight){ if(b) b.hidden=true; continue; }
+    const rand=r.height<40?2:r.height<80?3:6, top=r.top+rand, h=sbUnten(el,r,rand)-top; if(h<8){ if(b) b.hidden=true; continue; }
+    // Verdeckt (z. B. Update-Hinweis über den Einstellungen)? Dann keine Leiste
+    const x=r.right-10, hit=document.elementFromPoint(x,top+h/2);
+    if(hit&&!el.contains(hit)&&!(SB.wrap.contains(hit))){ if(b) b.hidden=true; continue; }
+    b=sbBar(el);
+    const th=Math.max(Math.min(28,Math.round(h*.45)),Math.round(h*el.clientHeight/el.scrollHeight)), ty=Math.round((h-th)*Math.min(1,Math.max(0,el.scrollTop/max)));
+    b._f=max/Math.max(1,h-th);
+    b.style.left=(r.right-8)+'px'; b.style.top=top+'px'; b.style.height=h+'px';
+    b.firstChild.style.height=th+'px'; b.firstChild.style.top=ty+'px';
+    if(b.hidden){ b.hidden=false; if(!b._neu){ b._neu=true; b.classList.remove('neu'); void b.offsetWidth; b.classList.add('neu'); clearTimeout(b._nt); b._nt=setTimeout(()=>b.classList.remove('neu'),2600); } }
+  }
+}
+function sbInit(){
+  SB.wrap=document.createElement('div'); SB.wrap.id='sbars'; document.body.appendChild(SB.wrap);
+  sbScan(); sbUpd();
+  document.addEventListener('scroll',()=>sbUpd(),{capture:true,passive:true});
+  addEventListener('resize',()=>sbUpd());
+  setInterval(()=>{ if(state==='play'){ if(SB.list.some(el=>{const b=SB.bars.get(el);return b&&!b.hidden;})) sbUpd(); return; }
+    if(++SB.scanT>=8){ SB.scanT=0; sbScan(); } sbUpd(); },150);
+}
+sbInit();
+
 // ---------- Feedback an den Entwickler ----------
 // Geht ohne Konto und ohne Netz: Nachrichten warten auf dem Gerät (orbitsprung.fb) und gehen raus, sobald der Server
 // erreichbar ist. Jede Nachricht hat eine eigene ID (fid), doppelt ankommen schadet nicht. Den Kontonamen schickt
@@ -5762,7 +5892,7 @@ function fbOptTxt(){
   e.textContent=a?(a===1?'Neue Antwort vom Entwickler':a+' neue Antworten vom Entwickler'):n?(n===1?'1 Nachricht wartet auf Verbindung':n+' Nachrichten warten auf Verbindung'):'Fehler, Ideen oder Lob direkt an den Entwickler';
 }
 function fbOpen(view){
-  if(state==='menu'&&view==='antw'){ openSettings(); fbAusMenu=true; }
+  if(state==='menu'){ openSettings(); fbAusMenu=true; }
   if(state!=='settings') return;
   fbFrom=state; elPause.hidden=true; state='feedback';
   document.body.classList.add('shopping'); $('fb').hidden=false;
@@ -5922,6 +6052,7 @@ function fbAntwMenu(){
   e.hidden=false;
 }
 $('fbNote').addEventListener('click',()=>{ if(state==='menu') fbOpen('antw'); });
+$('fbBtn').addEventListener('click',()=>{ if(state==='menu') fbOpen('form'); });
 fbAntwMenu();
 setTimeout(()=>fbAntwLoad(true),3000);
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') setTimeout(()=>fbAntwLoad(false),1200); });
