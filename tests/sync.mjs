@@ -50,7 +50,7 @@ const settle = d => d.page.waitForTimeout(1500); // Sync schreibt gebündelt nac
 async function buySkin(d, skinName) {
   await d.page.click('#shopFromMenu');
   await d.page.locator('#tabs .seg .tab', { hasText: 'Skins' }).click();
-  await d.page.locator('#tabs .sub .tab').first().click();
+  await d.page.locator('#shopSub .sub .tab').first().click();
   const before = await staub(d);
   const item = d.page.locator('#grid .item', { hasText: skinName });
   await item.click();
