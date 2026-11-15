@@ -380,6 +380,26 @@ body.shopping .mid{padding-block:0}
 .fbdone{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:14px 4px}
 .fbdone b{font:800 34px var(--display);color:var(--comet)}
 @media (max-height:520px){.fbta{min-height:84px}}
+/* Antworten des Entwicklers */
+.fnews.fbnote{background:linear-gradient(135deg,rgba(95,227,208,.16),rgba(95,227,208,.05));border-color:rgba(95,227,208,.6)}
+.fnews.fbnote b{color:#7ff0de}
+.fnews.fbnote b::before{content:"\2709  ";color:#7ff0de}
+.fnews.fbnote small{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fbaw{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:9px 12px;border-radius:12px;background:rgba(95,227,208,.08);border:1px solid rgba(95,227,208,.45)}
+.fbaw b{font-size:13.5px;color:#7ff0de}
+.fbneu{font:800 10.5px var(--body);letter-spacing:.05em;color:#06201c;background:#7ff0de;border-radius:6px;padding:2px 6px}
+.fbal{display:flex;flex-direction:column;gap:10px;max-height:min(56vh,520px);overflow:auto;margin:0 -4px;padding:0 4px}
+.fbai{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:12px;background:var(--tile);border:1px solid var(--line)}
+.fbai.ist-neu{border-color:rgba(95,227,208,.6)}
+.fbai .mine{font-size:12px;color:var(--muted);line-height:1.35}
+.fbai .mine i{font-style:normal;font-weight:700}
+.fbai .von{display:flex;align-items:center;gap:8px;font-size:12px;color:#7ff0de;font-weight:700}
+.fbai .von .wann{color:var(--muted);font-weight:400}
+.fbai p{margin:0;font-size:14.5px;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}
+.form.fbaliste{min-height:0;flex:1 1 auto;overflow:hidden}
+.form.fbaliste .fbal{flex:1 1 auto;min-height:56px}
+.fbtest{margin-top:2px;padding-top:8px;border-top:1px dashed var(--line)}
+.adata .aw{display:block;color:#7ff0de;margin-top:2px}
 /* Freunde */
 .lbsegs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .fnews{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:9px 12px;border-radius:12px;background:rgba(255,180,84,.1);border:1px solid rgba(255,180,84,.45)}
@@ -554,8 +574,9 @@ body.shopping .mid{padding-block:0}
       <p class="mdesc" id="modeDesc"></p>
       <button class="fnews tsnote" id="tsNote" type="button" hidden><b></b><small></small></button>
       <button class="fnews" id="fNews" type="button" hidden><b></b><small></small></button>
+      <button class="fnews fbnote" id="fbNote" type="button" hidden><b></b><small></small></button>
       <div class="keys">Leertaste, Pfeil hoch oder Tippen</div>
-      <div class="ver" id="ver">Orbitsprung 1.6.2</div>
+      <div class="ver" id="ver">Orbitsprung 1.6.3</div>
       </div>
       <div class="mact">
         <button class="go big" id="start" type="button">Starten</button>
@@ -1437,7 +1458,7 @@ if(!save.sk) save.sk={}; if(!save.own) save.own={};
 for(const k in SKINSETS){ if(!save.sk[k]) save.sk[k]=SKINSETS[k].items[0].id; if(!save.own[k]) save.own[k]=[SKINSETS[k].items[0].id]; }
 const skinOf=k=>SKINSETS[k].items.find(i=>i.id===save.sk[k])||SKINSETS[k].items[0];
 // Spielversion: muss zum Menütext #ver passen. Die GitHub Action nimmt sie als Release-Tag v<APP_VERSION>
-const APP_VERSION='1.6.2';
+const APP_VERSION='1.6.3';
 // Nur in der Test-Artefakt-Version true: alle Skins, Spielmodi und Entdeckungen gehören dir, dazu viel Staub für Upgrades
 const TEST_BUILD=false;
 function testUnlock(){
@@ -2502,8 +2523,9 @@ function mirror(p,nx,ny,rvx,rvy,vn){
 }
 function contacts(h){
   for(const p of planets){
-    if(p.dead||p===P.from) continue;
+    if(p.dead) continue;
     const dx=P.x-p.x, dy=P.y-p.y, d=Math.hypot(dx,dy)||1;
+    if(p===P.from){ if(p.type==='gas'||p.type==='bh'||p.type==='wurm'||d>p.r+4) continue; P.from=null; }
     if(p.type==='bh'){
       if(d<=p.r+2){ burst(P.x,P.y,'#ffb070',24,90); fail('swallow'); return; }
       if(P.mode==='fly'){ if(d<p.r*5) P.bhClose=p; else if(P.bhClose===p&&d>p.r*9){ P.bhClose=null; swingBonus(); } }
@@ -2563,7 +2585,8 @@ function stepComet(dt){
     const pl=P.pl, gm=pl.R*P.ospd*P.ospd, E=P.spd*P.spd/2-gm/P.rad;
     const kicked=P.hitT!=null&&time-P.hitT<.5;
     // Spielbar halten: Entkommen nur nach einem Stoß oder bei wirklich zu viel Energie, nie während des Einfangens
-    if(!P.cap&&((E>0&&P.rad>pl.R*(kicked?1.4:2.2))||P.rad>pl.R*3.5)){
+    const out=P.ox*P.ovx+P.oy*P.ovy>=0;
+    if(!P.cap&&out&&((E>0&&P.rad>pl.R*(kicked?1.4:2.2))||P.rad>pl.R*3.5)){
       escapeOrbit(); float(P.x,P.y-16,kicked?'Rausgekickt!':'Entkommen',kicked?'#ff9a8a':'#9ff3ff');
       if(kicked){ combo=0; updHud(); }
     }
@@ -5085,7 +5108,7 @@ function acctDataHtml(){
   // Feedback (ab Server 1.5.0, nur das mit deinem Namen gesendete)
   if(Array.isArray(D.feedback)&&D.feedback.length){
     h+=`<div class="ssec"><span class="lbl">Dein Feedback</span>`;
-    h+=D.feedback.map(f=>{ const t=String(f.text||''), k=t.length>90?t.slice(0,90)+' …':t; return adRow(lbEsc(f.art||'Feedback'),lbEsc(adDate(f.erstellt))+' · '+lbEsc(k),''); }).join('');
+    h+=D.feedback.map(f=>{ const t=String(f.text||''), k=t.length>90?t.slice(0,90)+' …':t; return adRow(lbEsc(f.art||'Feedback'),lbEsc(adDate(f.erstellt))+' · '+lbEsc(k)+(f.antwort?`<span class="aw">↳ ${lbEsc(String(f.antwort).length>140?String(f.antwort).slice(0,140)+' …':f.antwort)}</span>`:''),''); }).join('');
     h+=`</div>`;
   }
   // Bestwerte je Modus
@@ -5722,8 +5745,9 @@ var progReady=true;
 const FB_KEY='orbitsprung.fb', FB_MAX=2000, FB_QMAX=20;
 const FB_ARTEN=[['fehler','Fehler','Was ist passiert? Was hast du gerade gemacht?'],['idee','Idee','Was würdest du dir wünschen?'],['lob','Lob','Was gefällt dir?'],['sonst','Sonstiges','Schreib einfach los.']];
 let fbS={}; try{ fbS=JSON.parse(localStorage.getItem(FB_KEY)||'{}')||{}; }catch(e){ fbS={}; }
-if(!Array.isArray(fbS.queue)) fbS.queue=[]; if(!fbS.draft||typeof fbS.draft!=='object') fbS.draft={art:'idee',text:'',name:true};
+if(!Array.isArray(fbS.queue)) fbS.queue=[]; if(!Array.isArray(fbS.sent)) fbS.sent=[]; if(!fbS.antw||typeof fbS.antw!=='object') fbS.antw={}; if(!Array.isArray(fbS.gesehen)) fbS.gesehen=[]; if(!fbS.draft||typeof fbS.draft!=='object') fbS.draft={art:'idee',text:'',name:true};
 function fbSave(){ try{ localStorage.setItem(FB_KEY,JSON.stringify(fbS)); }catch(e){} }
+function fbIdle(){ return state!=='play'&&state!=='pause'; }
 let fbFrom=null, fbView='form', fbErr='', fbBusy=false, fbFlushing=null, fbDone=null, mockFbDaten=null;
 const fbLen=t=>[...String(t||'')].length;
 // Kurze Geräteangabe zum Nachvollziehen von Fehlern: Android-Version, Modell, Bildschirm (keine Kennung)
@@ -5734,45 +5758,64 @@ function fbGeraet(){
   return [a?'Android '+a[1]:'', mod, w+'×'+h].filter(Boolean).join(' · ').slice(0,80);
 }
 function fbOptTxt(){
-  const e=$('optFbTxt'); if(!e) return; const n=fbS.queue.length;
-  e.textContent=n?(n===1?'1 Nachricht wartet auf Verbindung':n+' Nachrichten warten auf Verbindung'):'Fehler, Ideen oder Lob direkt an den Entwickler';
+  const e=$('optFbTxt'); if(!e) return; const n=fbS.queue.length, a=fbAntwNeu().length;
+  e.textContent=a?(a===1?'Neue Antwort vom Entwickler':a+' neue Antworten vom Entwickler'):n?(n===1?'1 Nachricht wartet auf Verbindung':n+' Nachrichten warten auf Verbindung'):'Fehler, Ideen oder Lob direkt an den Entwickler';
 }
-function fbOpen(){
+function fbOpen(view){
+  if(state==='menu'&&view==='antw'){ openSettings(); fbAusMenu=true; }
   if(state!=='settings') return;
   fbFrom=state; elPause.hidden=true; state='feedback';
   document.body.classList.add('shopping'); $('fb').hidden=false;
-  fbView='form'; fbErr=''; fbRender(); SFX.ui();
+  fbView=view==='antw'&&fbAntwListe().length?'antw':'form'; fbErr=''; fbRender(); SFX.ui();
+  fbAntwLoad(true);
   if(fbS.queue.length) fbFlush().then(()=>{ if(state==='feedback'&&fbView==='form') fbRender(); });
 }
 function fbClose(){
   if(state!=='feedback') return;
   fbDraftKeep(); $('fb').hidden=true; state=fbFrom||'settings'; elPause.hidden=false;
   document.body.classList.remove('shopping'); fbOptTxt(); SFX.ui();
+  if(fbAusMenu){ fbAusMenu=false; closeSettings(); }
 }
 function fbDraftKeep(){ const t=$('fbText'); if(t&&fbView==='form'){ fbS.draft.text=t.value.slice(0,FB_MAX*2); fbSave(); } }
 function fbRender(){
   const B=$('fbBody'), go=$('fbGo'), back=$('fbBack'), d=fbS.draft;
+  B.classList.toggle('fbaliste',fbView==='antw');
   if(fbView==='done'){
     const r=fbDone||{};
     B.innerHTML=`<div class="fbdone"><b>${r.ok?'Danke!':'Gespeichert'}</b><p class="note${r.ok?' ok':''}">${lbEsc(r.txt||'')}</p></div>`;
     go.textContent='Fertig'; go.disabled=false; back.textContent='Noch etwas schreiben';
     return;
   }
+  if(fbView==='antw'){
+    const L=fbAntwListe();
+    B.innerHTML=`<p class="note">Antworten des Entwicklers auf dein Feedback.</p><div class="fbal">${L.map(a=>`<div class="fbai${a.neu?' ist-neu':''}">`
+      +`<div class="mine"><i>Deine Nachricht${a.erstellt?' vom '+lbEsc(fbTag(a.erstellt)):''}:</i> ${lbEsc(a.text||'')}</div>`
+      +`<div class="von">Antwort vom Entwickler <span class="wann">${lbEsc(fbTag(a.zeit))}</span>${a.neu?'<span class="fbneu">NEU</span>':''}</div>`
+      +`<p>${lbEsc(a.antwort)}</p></div>`).join('')||'<p class="note">Noch keine Antworten.</p>'}</div>`;
+    go.textContent='Fertig'; go.disabled=false; back.textContent='Feedback schreiben';
+    fbAntwGesehen(L);
+    return;
+  }
   const art=FB_ARTEN.find(x=>x[0]===d.art)||FB_ARTEN[1], n=fbLen(d.text), wq=fbS.queue.length;
   const mitName=!!lbS.token&&!!lbS.name;
-  B.innerHTML=`<p class="note">Deine Nachricht geht direkt an den Entwickler von Orbitsprung.</p>`
+  const AL=fbAntwListe(), an=AL.filter(a=>a.neu).length;
+  B.innerHTML=(AL.length?`<button class="fbaw" id="fbAw" type="button"><b>${AL.length===1?'Antwort vom Entwickler':AL.length+' Antworten vom Entwickler'}</b>${an?`<span class="fbneu">${an===1?'NEU':an+' NEU'}</span>`:''}</button>`:'')
+    +`<p class="note">Deine Nachricht geht direkt an den Entwickler von Orbitsprung.</p>`
     +`<div class="seg seg4" role="tablist" aria-label="Art">${FB_ARTEN.map(x=>`<button class="tab" type="button" role="tab" data-fa="${x[0]}" aria-selected="${x[0]===art[0]}">${x[1]}</button>`).join('')}</div>`
     +`<label>Deine Nachricht<textarea class="fld fbta" id="fbText" maxlength="${FB_MAX}" placeholder="${lbEsc(art[2])}" autocapitalize="sentences" spellcheck="true">${lbEsc(d.text||'')}</textarea></label>`
     +`<div class="fbcnt${n>=FB_MAX?' voll':''}" id="fbCnt">${n} / ${FB_MAX}</div>`
     +(mitName?`<button class="opt" id="fbName" type="button" role="switch" aria-checked="${d.name!==false}"><span><b>Mit meinem Namen senden</b><small>Als ${lbEsc(lbS.name)}, dann kann der Entwickler deine Runden ansehen</small></span><i aria-hidden="true"></i></button>`:'')
     +(wq?`<p class="note">${wq===1?'1 Nachricht wartet':wq+' Nachrichten warten'} noch auf Verbindung und ${wq===1?'geht':'gehen'} automatisch raus.</p>`:'')
     +(fbErr?`<p class="note ferr" role="alert">${lbEsc(fbErr)}</p>`:'')
-    +`<p class="note" style="font-size:11.5px">Mitgeschickt werden nur Spielversion, Android-Version, Handymodell, Bildschirmgröße und dein letzter Modus. Bitte schreib keine persönlichen Daten hinein. <a href="${LB_URL}/datenschutz" target="_blank" rel="noopener">Datenschutz</a></p>`;
+    +`<p class="note" style="font-size:11.5px">Mitgeschickt werden nur Spielversion, Android-Version, Handymodell, Bildschirmgröße und dein letzter Modus. Bitte schreib keine persönlichen Daten hinein. <a href="${LB_URL}/datenschutz" target="_blank" rel="noopener">Datenschutz</a></p>`
+    +(TEST_BUILD&&lbS.srv!=='echt'&&fbS.sent.some(x=>x.s==='schein')?`<div class="fbtest"><button class="opt" id="fbTestAw" type="button"><span><b>Antwort simulieren</b><small>Test: Der Entwickler antwortet auf deine letzte gesendete Nachricht (Schein-Server). Danach ins Menü.</small></span></button></div>`:'');
   go.textContent=fbBusy?'Sende …':'Senden'; go.disabled=fbBusy; back.textContent='Zurück';
   const ta=$('fbText');
   ta.addEventListener('input',()=>{ d.text=ta.value; const c=$('fbCnt'), k=fbLen(ta.value); c.textContent=k+' / '+FB_MAX; c.classList.toggle('voll',k>=FB_MAX); if(fbErr){ fbErr=''; const f=B.querySelector('.ferr'); if(f) f.remove(); } clearTimeout(fbRender.t); fbRender.t=setTimeout(fbSave,400); });
   B.querySelectorAll('[data-fa]').forEach(b=>b.addEventListener('click',()=>{ d.text=ta.value; d.art=b.dataset.fa; fbSave(); SFX.ui(); fbRender(); }));
   const nm=$('fbName'); if(nm) nm.addEventListener('click',()=>{ d.text=ta.value; d.name=d.name===false; fbSave(); SFX.ui(); fbRender(); });
+  const aw=$('fbAw'); if(aw) aw.addEventListener('click',()=>{ d.text=ta.value; fbSave(); fbView='antw'; SFX.ui(); fbRender(); });
+  const tw=$('fbTestAw'); if(tw) tw.addEventListener('click',async()=>{ d.text=ta.value; fbSave(); SFX.ui(); const t=mockFbAntworten(); fbErr=t?'':'Keine gesendete Nachricht im Schein-Server.'; await fbAntwLoad(true); if(state==='feedback'){ fbRender(); } });
 }
 async function fbSend(){
   if(fbBusy) return;
@@ -5804,7 +5847,7 @@ function fbFlush(){
       const body={fid:e.fid,art:e.art,text:e.text,version:e.version,geraet:e.geraet,modus:e.modus,geschrieben:e.geschrieben};
       if(TEST_BUILD) body.test=true;
       let x; try{ x=await lbCall('POST','/v1/feedback',body,mitKonto); }catch(err){ r.netz=true; break; }
-      if(x.status===200||x.status===201){ r.gesendet++; fbS.queue=fbS.queue.filter(q=>q.fid!==e.fid); }
+      if(x.status===200||x.status===201){ r.gesendet++; fbS.queue=fbS.queue.filter(q=>q.fid!==e.fid); fbMerken(e); }
       else if(x.status===400||x.status===413){ r.bad[e.fid]=x.j.fehler||'Die Nachricht wurde abgelehnt.'; fbS.queue=fbS.queue.filter(q=>q.fid!==e.fid); }
       else if(x.status===403){ r.bad[e.fid]=x.j.fehler||'Abgelehnt.'; fbS.queue=fbS.queue.filter(q=>q.fid!==e.fid); }
       else if(x.status===404){ r.alt=true; break; }
@@ -5817,10 +5860,75 @@ function fbFlush(){
   return fbFlushing;
 }
 $('optFb').addEventListener('click',fbOpen);
-$('fbBack').addEventListener('click',()=>{ if(fbView==='done'){ fbView='form'; fbErr=''; SFX.ui(); fbRender(); const t=$('fbText'); if(t) t.focus(); } else fbClose(); });
-$('fbGo').addEventListener('click',()=>{ if(fbView==='done') fbClose(); else fbSend(); });
+$('fbBack').addEventListener('click',()=>{ if(fbView==='antw'){ fbView='form'; fbErr=''; SFX.ui(); fbRender(); return; } if(fbView==='done'){ fbView='form'; fbErr=''; SFX.ui(); fbRender(); const t=$('fbText'); if(t) t.focus(); } else fbClose(); });
+$('fbGo').addEventListener('click',()=>{ if(fbView==='done'||fbView==='antw') fbClose(); else fbSend(); });
+// ---- Antworten des Entwicklers (ab Server 1.7.0, rein optional) ----
+// Das Spiel merkt sich die IDs seiner gesendeten Nachrichten (orbitsprung.fb.sent, nur auf dem Handy) und fragt damit
+// ab und zu nach Antworten. Angemeldet kommen Antworten auf Feedback mit Namen dazu, auch von anderen Geräten.
+// Neue Antworten erscheinen als Hinweis im Menü und unter Einstellungen → Feedback senden. Angezeigt = gelesen,
+// das meldet das Spiel beim nächsten Abholen (nur damit der Entwickler weiß, dass sie angekommen ist).
+const FB_SMAX=50;
+let fbAusMenu=false, fbAntwLaedt=false;
+const fbSrv=()=>progSrv();
+const fbTag=t=>{ const d=new Date(t); return isNaN(d)?'':d.getDate()+'.'+(d.getMonth()+1)+'.'+String(d.getFullYear()).slice(2); };
+function fbMerken(e){
+  if(fbS.sent.some(x=>x.fid===e.fid)) return;
+  fbS.sent.push({fid:e.fid,art:e.art,t:e.geschrieben||Date.now(),s:fbSrv()});
+  while(fbS.sent.length>FB_SMAX) fbS.sent.shift();
+}
+function fbAntwListe(){ const s=fbSrv(); return Object.values(fbS.antw).filter(a=>a&&a.s===s&&a.antwort).sort((a,b)=>b.zeit-a.zeit); }
+function fbAntwNeu(){ return fbAntwListe().filter(a=>a.neu); }
+function fbAntwGesehen(L){
+  let n=0; for(const a of L) if(a.neu){ a.neu=false; n++; if(!fbS.gesehen.includes(a.fid)) fbS.gesehen.push(a.fid); }
+  if(!n) return; fbS.gesehen=fbS.gesehen.slice(-100); fbSave(); fbAntwMenu(); fbOptTxt();
+  setTimeout(()=>fbAntwLoad(true),400);
+}
+async function fbAntwLoad(force){
+  if(fbAntwLaedt||!fbIdle()) return;
+  const s=fbSrv(), fids=fbS.sent.filter(x=>x.s===s).slice(-100).map(x=>x.fid);
+  if(!fids.length&&!lbS.token&&!fbS.gesehen.length) return;
+  if(!force&&Date.now()-(fbS.antwT||0)<5*60e3) return;
+  fbAntwLaedt=true; fbS.antwT=Date.now();
+  const gesehen=fbS.gesehen.slice(0,100);
+  let geaendert=false;
+  try{
+    const x=await lbCall('POST','/v1/feedback/antworten',{fids,gesehen:gesehen.length?gesehen:undefined},!!lbS.token);
+    if(x.status===200&&x.j&&Array.isArray(x.j.antworten)){
+      const da=new Set();
+      for(const a of x.j.antworten){
+        if(!a||typeof a.fid!=='string'||typeof a.antwort!=='string') continue;
+        da.add(a.fid); const alt=fbS.antw[a.fid];
+        const neu=!alt||alt.zeit!==a.zeit||alt.antwort!==a.antwort;
+        if(neu||alt.s!==s) geaendert=true;
+        fbS.antw[a.fid]={fid:a.fid,nr:a.nr,art:a.art,text:String(a.text||''),erstellt:a.erstellt,antwort:a.antwort,zeit:a.zeit,s,neu:neu?true:!!alt.neu};
+      }
+      // Zurückgezogene Antworten verschwinden (nur die, nach denen gefragt wurde)
+      for(const k of Object.keys(fbS.antw)){ const a=fbS.antw[k]; if(a.s===s&&!da.has(k)&&(fids.includes(k)||lbS.token)){ delete fbS.antw[k]; geaendert=true; } }
+      fbS.gesehen=fbS.gesehen.filter(f=>!gesehen.includes(f));
+    }else if(x.status===400){ fbS.gesehen=[]; }
+    // 404: Server kennt noch keine Antworten, dann bleibt alles, wie es ist
+  }catch(e){}
+  fbAntwLaedt=false; fbSave();
+  fbAntwMenu(); fbOptTxt();
+  if(geaendert&&state==='feedback'&&fbView!=='done'){ fbDraftKeep(); fbRender(); }
+}
+function fbAntwMenu(){
+  const e=$('fbNote'); if(!e) return;
+  const L=fbAntwNeu();
+  if(!L.length){ e.hidden=true; return; }
+  e.querySelector('b').textContent=L.length===1?'Antwort vom Entwickler':L.length+' Antworten vom Entwickler';
+  const t=L[0].antwort.replace(/\s+/g,' ').trim();
+  e.querySelector('small').textContent=[...t].length>110?[...t].slice(0,108).join('')+' …':t;
+  e.hidden=false;
+}
+$('fbNote').addEventListener('click',()=>{ if(state==='menu') fbOpen('antw'); });
+fbAntwMenu();
+setTimeout(()=>fbAntwLoad(true),3000);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') setTimeout(()=>fbAntwLoad(false),1200); });
+window.addEventListener('online',()=>setTimeout(()=>fbAntwLoad(false),2500));
+setInterval(()=>{ if(document.visibilityState==='visible') fbAntwLoad(false); },10*60e3);
+
 // Nachreichen: kurz nach dem Start, wenn das Netz zurückkommt, und alle 2 Minuten, solange etwas wartet (nie während einer Runde)
-const fbIdle=()=>state!=='play'&&state!=='pause';
 setTimeout(()=>{ if(fbS.queue.length&&fbIdle()) fbFlush(); },2500);
 window.addEventListener('online',()=>{ if(fbS.queue.length) setTimeout(()=>{ if(fbIdle()) fbFlush(); },1500); });
 setInterval(()=>{ if(fbS.queue.length&&document.visibilityState==='visible'&&fbIdle()) fbFlush(); },120e3);
@@ -5955,6 +6063,17 @@ function mockRoute(method,path,body,tok){
     const nr=D.fb.length+1; D.fb.push({nr,fid:body.fid,konto:ko?ko.name:null,art:body.art,text:t,version:body.version,geraet:body.geraet,modus:body.modus,test:body.test===true,t:now}); mockSave();
     return R(201,{ok:true,nr});
   }
+  if(method==='POST'&&p==='/v1/feedback/antworten'){
+    const ko=auth(); D.fb=D.fb||[];
+    if(lbS.mockFbAus) return R(404,{fehler:'Nicht gefunden.'});
+    const ok=x=>x===undefined||(Array.isArray(x)&&x.length<=100&&x.every(f=>typeof f==='string'&&/^[A-Za-z0-9_-]{8,64}$/.test(f)));
+    if(!ok(body.fids)||!ok(body.gesehen)) return R(400,{fehler:'Ungültige Feedback-IDs.'});
+    const fids=body.fids||[], rows=D.fb.filter(f=>f.antwort&&(fids.includes(f.fid)||(ko&&f.konto===ko.name)));
+    for(const f of rows) if((body.gesehen||[]).includes(f.fid)) f.agesehen=now;
+    mockSave();
+    const kurz=x=>{ const z=[...String(x).replace(/\s+/g,' ').trim()]; return z.length>160?z.slice(0,159).join('')+'…':z.join(''); };
+    return R(200,{ok:true,antworten:rows.sort((a,b)=>b.azeit-a.azeit).map(f=>({fid:f.fid,nr:f.nr,art:f.art,text:kurz(f.text),erstellt:f.t,antwort:f.antwort,zeit:f.azeit}))});
+  }
   const k=auth();
   if(!k) return R(401,{fehler:'Anmeldung abgelaufen. Bitte neu anmelden.'});
   if(p.startsWith('/v1/freunde')||p.startsWith('/v1/_test/')){ const r=mockFrRoute(method,p,url,body,k); if(r) return r; }
@@ -6002,7 +6121,7 @@ function mockRoute(method,path,body,tok){
   }
   if(method==='POST'&&p==='/v1/abmelden'){ delete D.sitz[tok]; mockSave(); return R(200,{ok:true}); }
   if(method==='GET'&&p==='/v1/konto') return R(200,{name:k.name,erstellt:k.erstellt});
-  if(method==='GET'&&p==='/v1/konto/daten') mockFbDaten=(D.fb||[]).filter(f=>f.konto===k.name).map(f=>({art:{fehler:'Fehler',idee:'Idee',lob:'Lob',sonst:'Sonstiges'}[f.art],text:f.text,version:f.version,geraet:f.geraet,modus:f.modus,erstellt:new Date(f.t).toISOString()}));
+  if(method==='GET'&&p==='/v1/konto/daten') mockFbDaten=(D.fb||[]).filter(f=>f.konto===k.name).map(f=>({art:{fehler:'Fehler',idee:'Idee',lob:'Lob',sonst:'Sonstiges'}[f.art],text:f.text,version:f.version,geraet:f.geraet,modus:f.modus,erstellt:new Date(f.t).toISOString(),antwort:f.antwort||undefined}));
   if(method==='PATCH'&&p==='/v1/konto'){
     if(!nameOk(body.name)) return R(400,{fehler:'Name: 3 bis 16 Zeichen, nur Buchstaben, Ziffern, _ und -.'});
     if(lbNorm(body.name)!==lbNorm(k.name)){
@@ -6145,6 +6264,14 @@ function mockFrRoute(method,p,url,body,k){
 function mockFrFilter(rows,k){
   const fl=mockFrList('k'+k.id);
   return rows.filter(r=>r.kid===k.id||(r.kid===-1?fl.includes('b:'+r.name):fl.includes('k'+r.kid)));
+}
+// Testversion: „Antwort simulieren“ – der Entwickler antwortet im Schein-Server auf die letzte gesendete Nachricht
+function mockFbAntworten(){
+  mockLoad(); const D=mockDb; D.fb=D.fb||[];
+  const meine=new Set(fbS.sent.filter(x=>x.s==='schein').map(x=>x.fid));
+  const f=D.fb.filter(x=>meine.has(x.fid)).pop(); if(!f) return false;
+  f.antwort={fehler:'Danke für die Meldung! Der Fehler ist behoben, die Korrektur kommt mit dem nächsten Update.',idee:'Danke für die Idee! Ich habe sie mir für eine der nächsten Versionen vorgemerkt.',lob:'Vielen Dank, das freut mich sehr!'}[f.art]||'Danke für dein Feedback!';
+  f.azeit=Date.now(); f.agesehen=null; mockSave(); return true;
 }
 function mockCall(method,path,body,tok){
   const d=lbS.mockSlow?8000:220+Math.random()*250;
